@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QDM Compendium — RSM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMath()"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0c0d0e;--bg2:#111214;--bg3:#161719;--bg4:#1c1d20;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --text:#dde0e4;--text2:#8a9099;--text3:#555b64;--hi:#c8cdd4;--lo:#3e4349;
+  --ok:#7aad8a;--ok-bg:rgba(122,173,138,0.08);--ok-bd:rgba(122,173,138,0.2);
+  --warn:#b89a5a;--warn-bg:rgba(184,154,90,0.08);--warn-bd:rgba(184,154,90,0.2);
+  --bad:#b06060;--bad-bg:rgba(176,96,96,0.08);--bad-bd:rgba(176,96,96,0.2);
+  --blue:#5b8dd9;--blue-bg:rgba(91,141,217,0.08);--blue-bd:rgba(91,141,217,0.2);
+  --sb-w:360px;--nav-h:44px;--toc-w:188px;--content-max:740px;
+  --ff:'Syne',sans-serif;--fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:13px;line-height:1.6;min-height:100vh}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(12,13,14,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.25rem;gap:1rem;z-index:200}
+.nav-logo{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.weeks{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none}
+.weeks::-webkit-scrollbar{display:none}
+.wk{padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:.04em;font-family:var(--ff);border:1px solid var(--border);cursor:pointer;background:transparent;color:var(--text3);transition:all .15s;white-space:nowrap}
+.wk.active{background:var(--bg4);border-color:var(--border2);color:var(--hi)}
+.wk.locked{cursor:not-allowed;opacity:.3;pointer-events:none}
+.cat-tabs{display:flex;gap:2px;flex-shrink:0}
+.cat-tab{padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;font-family:var(--ff);border:1px solid var(--border);cursor:pointer;background:transparent;color:var(--text3);transition:all .15s}
+.cat-tab.active{background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue)}
+.cat-tab:not(.active):hover{border-color:var(--border2);color:var(--text2)}
+.nav-sep{width:1px;height:18px;background:var(--border2);flex-shrink:0}
+.wk:not(.locked):not(.active):hover{border-color:var(--border2);color:var(--text2)}
+
+/* LAYOUT — centered */
+.layout{display:flex;padding-top:var(--nav-h);min-height:100vh;justify-content:center;padding-left:var(--toc-w)}
+
+/* TOC */
+.toc{position:fixed;top:var(--nav-h);left:0;width:var(--toc-w);height:calc(100vh - var(--nav-h));overflow-y:auto;padding:.9rem .5rem .9rem .5rem;border-right:1px solid var(--border);scrollbar-width:thin;scrollbar-color:var(--bg3) transparent;transition:transform .28s cubic-bezier(.4,0,.2,1)}
+
+.toc-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem;padding-left:4px}
+.toc-item{display:block;font-size:11px;color:var(--text3);padding:3px 4px;border-radius:3px;cursor:pointer;transition:all .12s;border:none;background:none;text-align:left;width:100%;line-height:1.4;font-family:var(--ff)}
+.toc-item:hover{color:var(--text2);background:var(--bg3)}
+.toc-item.on{color:var(--hi);background:var(--bg3)}
+
+/* MAIN */
+.main{width:100%;max-width:var(--content-max);padding:1.5rem 1.75rem 5rem}
+
+/* WEEK PAGES */
+.week-page{display:none}
+.week-page.active{display:block}
+
+/* HERO */
+.hero{margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.hero-tag{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.3rem}
+.hero h1{font-size:20px;font-weight:700;line-height:1.15;letter-spacing:-.025em;color:var(--hi)}
+.hero-meta{font-size:10.5px;color:var(--text3);margin-top:.2rem}
+
+/* SECTIONS */
+section{margin-bottom:1.75rem}
+h2{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.65rem;padding-bottom:.35rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.45rem}
+h2 .sn{font-family:var(--fm);color:var(--lo);font-size:9px}
+h3{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin:.8rem 0 .3rem}
+p{color:var(--text2);font-size:12px;line-height:1.65;margin-bottom:.35rem}
+
+/* FORMULA GRID */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:.65rem}
+.fg1{grid-template-columns:1fr}
+.fg3{grid-template-columns:1fr 1fr 1fr}
+.fc{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:.55rem .75rem;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.fc::after{content:'→';position:absolute;top:.4rem;right:.6rem;font-size:10px;color:var(--text3);opacity:0;transition:opacity .15s}
+.fc:hover{border-color:var(--border2);background:var(--bg3)}
+.fc:hover::after{opacity:1}
+.fc .fl{font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.25rem}
+.fc .fn{font-size:10.5px;color:var(--text3);margin-top:.25rem;line-height:1.45}
+.fc .katex{font-size:.85em!important}
+.fc .katex-display{margin:.1rem 0!important;overflow-x:auto}
+
+/* CARD GRID */
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:.65rem}
+.cg2{grid-template-columns:repeat(2,1fr)}
+.cg4{grid-template-columns:repeat(4,1fr)}
+.cc{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:.55rem .7rem;cursor:pointer;transition:all .15s}
+.cc:hover{border-color:var(--border2);background:var(--bg3)}
+.cc-t{font-size:11.5px;font-weight:600;color:var(--hi);margin-bottom:.15rem}
+.cc-b{font-size:11px;color:var(--text2);line-height:1.45}
+.badge{display:inline-block;font-size:8.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:1px 5px;border-radius:3px;margin-bottom:.25rem;font-family:var(--ff)}
+.b-lo{background:var(--bg4);color:var(--text3);border:1px solid var(--border2)}
+.b-ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-bd)}
+.b-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-bd)}
+.b-bad{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad-bd)}
+.b-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd)}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:.3rem;margin:.4rem 0 .65rem}
+.sr{display:flex;align-items:flex-start;gap:7px}
+.sn2{min-width:18px;height:18px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);color:var(--text3);font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:var(--fm)}
+.st{font-size:11.5px;color:var(--text2);line-height:1.5}
+.st strong{color:var(--text);font-weight:600}
+
+/* TABLE */
+.tw{overflow-x:auto;margin:.4rem 0 .2rem;border-radius:5px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:11px}
+thead tr{background:var(--bg3)}
+th{padding:4px 8px;font-weight:600;color:var(--text3);text-align:center;font-size:9.5px;letter-spacing:.04em;border-bottom:1px solid var(--border);white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:4px 8px;color:var(--text2);text-align:center;border-bottom:1px solid var(--border);transition:background .1s}
+td:first-child{text-align:left;font-weight:500;color:var(--text);font-size:10.5px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.015)}
+.c-ok{background:var(--ok-bg)!important;color:var(--ok)!important;font-weight:600}
+.c-bad{background:var(--bad-bg)!important;color:var(--bad)!important;font-weight:600}
+.c-lo{background:var(--bg3)!important;color:var(--text3)!important;font-weight:600}
+.c-blue{background:var(--blue-bg)!important;color:var(--blue)!important;font-weight:600}
+.c-warn{background:var(--warn-bg)!important;color:var(--warn)!important;font-weight:600}
+
+/* CRITERION ROWS */
+.cl{display:flex;flex-direction:column;gap:4px;margin:.4rem 0}
+.cr{display:flex;align-items:stretch;border:1px solid var(--border);border-radius:5px;overflow:hidden;cursor:pointer;transition:all .15s}
+.cr:hover{border-color:var(--border2)}
+.cr-name{min-width:110px;padding:6px 9px;font-size:10.5px;font-weight:600;display:flex;align-items:center;border-right:1px solid var(--border);flex-shrink:0;font-family:var(--ff)}
+.cr-desc{flex:1;padding:6px 9px;font-size:11px;color:var(--text2);background:var(--bg2);line-height:1.4;display:flex;align-items:center}
+.cr-desc code{font-family:var(--fm);font-size:10px;background:var(--bg4);padding:1px 4px;border-radius:2px;color:var(--warn)}
+
+/* INFO BOX */
+.ib{background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--text3);border-radius:0 5px 5px 0;padding:.4rem .65rem;font-size:11px;color:var(--text2);margin:.35rem 0;line-height:1.5;transition:border-color .15s}
+.ib.click{cursor:pointer}
+.ib.click:hover{border-color:var(--border2);border-left-color:var(--hi)}
+.ib strong{color:var(--hi)}
+.ib.ok{border-left-color:var(--ok)}
+.ib.warn{border-left-color:var(--warn)}
+.ib.bad{border-left-color:var(--bad)}
+.ib.blue{border-left-color:var(--blue)}
+
+/* NOTE */
+.note{font-size:10px;color:var(--text3);font-style:italic;margin-top:.15rem;line-height:1.4}
+
+/* CHART */
+.cw{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:.75rem;margin:.4rem 0}
+.cl2{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:.5rem;padding-bottom:.45rem;border-bottom:1px solid var(--border)}
+.cli{display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--text2)}
+.ld{width:20px;height:2px;border-radius:1px;flex-shrink:0}
+.ld.dash{background:repeating-linear-gradient(90deg,var(--text3) 0,var(--text3) 3px,transparent 3px,transparent 6px)}
+
+/* REGION BAR */
+.rb{display:flex;border-radius:4px;overflow:hidden;height:28px;margin:.5rem 0;border:1px solid var(--border)}
+.rr{display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:600;text-align:center;line-height:1.25;padding:0 5px}
+
+/* VALUE CHAIN */
+.vc{display:flex;align-items:center;gap:0;margin:.5rem 0;overflow-x:auto}
+.vb{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-size:10.5px;cursor:pointer;transition:all .15s;flex-shrink:0;text-align:center}
+.vb:hover{border-color:var(--border2);background:var(--bg3)}
+.vb .vl{font-size:8.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+.vb .vv{font-size:13px;font-weight:700;font-family:var(--fm);color:var(--hi)}
+.va{font-size:10px;color:var(--text3);padding:0 4px;flex-shrink:0}
+.vb.hi{border-color:var(--ok-bd);background:var(--ok-bg)}
+.vb.hi .vv{color:var(--ok)}
+
+/* RISK CHART */
+.utility-vis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin:.4rem 0}
+.uv{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:.5rem .6rem;cursor:pointer;transition:all .15s}
+.uv:hover{border-color:var(--border2);background:var(--bg3)}
+.uv-label{font-size:8.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.uv canvas{display:block;width:100%!important;height:72px!important}
+
+/* SIDEBAR */
+.sb{position:fixed;top:var(--nav-h);right:calc(-1 * var(--sb-w));width:var(--sb-w);height:calc(100vh - var(--nav-h));background:var(--bg2);border-left:1px solid var(--border);overflow-y:auto;transition:right .28s cubic-bezier(.4,0,.2,1);z-index:150;scrollbar-width:thin;scrollbar-color:var(--bg4) transparent}
+.sb.open{right:0}
+.sb-inner{padding:1.1rem}
+.sb-close{position:absolute;top:9px;right:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text3);width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .12s;font-family:var(--ff);line-height:1;z-index:10}
+.sb-close:hover{background:var(--bg4);color:var(--text)}
+.sb-tag{display:inline-block;font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);border:1px solid var(--border2);padding:1px 6px;border-radius:3px;margin-bottom:.55rem}
+.sb-title{font-size:15px;font-weight:700;line-height:1.25;margin-bottom:.65rem;letter-spacing:-.015em;padding-right:2rem;color:var(--hi)}
+.sb-body{font-size:12px;color:var(--text2);line-height:1.65}
+.sb-body p{font-size:12px;margin-bottom:.5rem}
+.sb-body strong{color:var(--text);font-weight:600}
+.sb-body .sf{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:.5rem .75rem;margin:.45rem 0;overflow-x:auto}
+.sb-body .sf .katex{font-size:.87em!important}
+.sb-body .se{background:var(--ok-bg);border:1px solid var(--ok-bd);border-radius:4px;padding:.45rem .65rem;margin:.45rem 0;font-size:11.5px;color:var(--text2);line-height:1.5}
+.sb-body .sw{background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:4px;padding:.45rem .65rem;margin:.45rem 0;font-size:11px;color:var(--text2);line-height:1.45}
+.sb-body .sb2{background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:4px;padding:.45rem .65rem;margin:.45rem 0;font-size:11px;color:var(--text2);line-height:1.45}
+.sb-body hr{border:none;border-top:1px solid var(--border);margin:.65rem 0}
+.sb-body .ss{display:flex;gap:7px;margin-bottom:.4rem;align-items:flex-start}
+.sb-body .ssn{min-width:17px;height:17px;border-radius:50%;background:var(--bg4);color:var(--text3);font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:var(--fm)}
+.sb-body .sst{font-size:11.5px;color:var(--text2);line-height:1.5}
+.sb-body .sst strong{color:var(--text)}
+
+/* OVERLAY */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:140;opacity:0;pointer-events:none;transition:opacity .28s}
+.ov.on{opacity:1;pointer-events:all}
+
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+.katex-display{overflow-x:auto;overflow-y:hidden;margin:.1rem 0!important}
+.katex{color:var(--text)!important}
+
+@media(max-width:960px){
+  .toc{display:none}.layout{padding-left:0}.main{padding:1.1rem 1rem 4rem}
+  .fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr 1fr}
+  .utility-vis{grid-template-columns:1fr}
+  .sb{top:auto;bottom:-100vh;right:0;left:0;width:100%;height:70vh;max-height:85vh;border-left:none;border-top:1px solid var(--border2);border-radius:12px 12px 0 0;transition:bottom .28s cubic-bezier(.4,0,.2,1)}
+  .sb.open{bottom:0;right:0}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo" id="nav-logo">QDM · RSM</div>
+  <div class="cat-tabs">
+    <button class="cat-tab active" onclick="switchCat('qdm',this)">QDM</button>
+    <button class="cat-tab" onclick="switchCat('om',this)">OM</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="weeks" id="week-tabs">
+    <button class="wk active" data-cat="qdm" onclick="switchWeek(1,this,'qdm')">Week 1</button>
+    <button class="wk" data-cat="qdm" onclick="switchWeek(2,this,'qdm')">Week 2</button>
+    <button class="wk locked" data-cat="qdm">Week 3</button>
+    <button class="wk locked" data-cat="qdm">Week 4</button>
+    <button class="wk locked" data-cat="qdm">Week 5</button>
+    <button class="wk locked" data-cat="qdm">Week 6</button>
+    <button class="wk active" data-cat="om" style="display:none" onclick="switchWeek(1,this,'om')">W1</button>
+    <button class="wk locked" data-cat="om" style="display:none">W2</button>
+    <button class="wk locked" data-cat="om" style="display:none">W3</button>
+    <button class="wk locked" data-cat="om" style="display:none">W4</button>
+    <button class="wk locked" data-cat="om" style="display:none">W5</button>
+    <button class="wk locked" data-cat="om" style="display:none">W6</button>
+    <button class="wk locked" data-cat="om" style="display:none">W7</button>
+  </div>
+</nav>
+
+<div class="ov" id="ov" onclick="closeSB()"></div>
+
+<div class="layout">
+<aside class="toc" id="toc">
+  <div class="toc-label" id="toc-label">Contents</div>
+  <div id="toc-items"></div>
+</aside>
+
+<main class="main" id="main">
+
+<!-- ═══════════════════════════════ WEEK 1 ═══════════════════════════════ -->
+<div class="week-page active" id="week1">
+
+<div class="hero">
+  <div class="hero-tag">Lecture 1 · Week 1</div>
+  <h1>Quantitative Decision Making</h1>
+  <div class="hero-meta">RSM Erasmus University Rotterdam · Pieter van den Berg</div>
+</div>
+
+<section id="w1-formulas">
+<h2><span class="sn">00</span> Formulas at a glance</h2>
+<div class="fg">
+  <div class="fc" onclick="openSB('profit')">
+    <div class="fl">Profit per cell</div>
+    <div>\(\pi = \min(C,D)\cdot p - C\cdot c - \max(D{-}C,\,0)\cdot g\)</div>
+    <div class="fn"><em>C</em>=capacity · <em>D</em>=demand · <em>p</em>=price · <em>c</em>=cost/seat · <em>g</em>=goodwill</div>
+  </div>
+  <div class="fc" onclick="openSB('emv')">
+    <div class="fl">Expected Monetary Value</div>
+    <div>\(\text{EMV}(d) = \displaystyle\sum_{s} \pi(d,s)\cdot P(s)\)</div>
+    <div class="fn">Probability-weighted average profit. Choose max EMV.</div>
+  </div>
+  <div class="fc" onclick="openSB('hurwicz')">
+    <div class="fl">Hurwicz criterion</div>
+    <div>\(H(d) = \alpha\cdot\max_s\pi + (1{-}\alpha)\cdot\min_s\pi\)</div>
+    <div class="fn">\(\alpha=1\) = MaxiMax · \(\alpha=0\) = MaxiMin</div>
+  </div>
+  <div class="fc" onclick="openSB('evpi')">
+    <div class="fl">EVPI</div>
+    <div>\(\text{EVwPI} = \sum_s \max_d\,\pi(d,s)\cdot P(s)\)</div>
+    <div style="margin-top:.15rem">\(\text{EVPI} = \text{EVwPI} - \max_d\text{EMV}(d) = \min_d\text{EOL}(d)\)</div>
+  </div>
+</div>
+</section>
+
+<section id="w1-intro">
+<h2><span class="sn">01</span> What is quantitative decision making?</h2>
+<p>Decisions are choices between alternatives evaluated by criteria. Intuition fails in complex situations — systematic methods compensate. Goal: <em>better, more responsible decisions in a complex and dynamic world.</em></p>
+<div class="cg">
+  <div class="cc" onclick="openSB('hard-decision')">
+    <div class="cc-t">What makes decisions hard?</div>
+    <div class="cc-b">Many options · conflicting objectives · uncertainty about outcomes</div>
+  </div>
+  <div class="cc" onclick="openSB('good-decision')">
+    <div class="cc-t">What makes a good decision?</div>
+    <div class="cc-b">Evaluate both the <em>outcome</em> and the <em>process</em> — avoid outcome bias</div>
+  </div>
+  <div class="cc" onclick="openSB('outcome-bias')">
+    <div class="cc-t">Outcome bias</div>
+    <div class="cc-b">Judging decision quality solely by what happened, not by the reasoning used</div>
+  </div>
+</div>
+</section>
+
+<section id="w1-dtable">
+<h2><span class="sn">02</span> Building the decision table</h2>
+<div class="steps">
+  <div class="sr"><div class="sn2">1</div><div class="st"><strong>Decisions (strategies)</strong> — choices you control, e.g. 1 flight vs. 2 flights</div></div>
+  <div class="sr"><div class="sn2">2</div><div class="st"><strong>Scenarios (states of nature)</strong> — future events you don't control, e.g. demand \(\in\{100,200,300,400\}\)</div></div>
+  <div class="sr"><div class="sn2">3</div><div class="st"><strong>Decision table</strong> — profit \(\pi(d,s)\) for every decision × scenario combination</div></div>
+</div>
+<h3>Airline example — profit table (thousands of euros)</h3>
+<p style="margin-bottom:.35rem;font-size:11px">Ticket price <b style="color:var(--text)">200</b> · Cost/seat <b style="color:var(--text)">100</b> · Goodwill penalty <b style="color:var(--text)">80</b> · Seats per flight <b style="color:var(--text)">200</b></p>
+<div class="tw">
+  <table>
+    <thead><tr><th>Decision</th><th>D=100</th><th>D=200</th><th>D=300</th><th>D=400</th></tr></thead>
+    <tbody>
+      <tr><td>1 flight (200 seats)</td><td>0</td><td>20</td><td class="c-ok">12</td><td>4</td></tr>
+      <tr><td>2 flights (400 seats)</td><td class="c-bad">−20</td><td>0</td><td>20</td><td class="c-ok">40</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="note">Green = column max · Red = worst outcome · Values in k EUR</p>
+<div class="fg">
+  <div class="fc" onclick="openSB('sales-formula')">
+    <div class="fl">Units sold</div>
+    <div>\(\text{Sales} = \min(C,\,D)\)</div>
+    <div class="fn">Cannot exceed capacity or demand.</div>
+  </div>
+  <div class="fc" onclick="openSB('oos-formula')">
+    <div class="fl">Out-of-stock</div>
+    <div>\(\text{OOS} = \max(D{-}C,\;0)\)</div>
+    <div class="fn">Each unserved customer costs goodwill <em>g</em>.</div>
+  </div>
+</div>
+<div class="ib ok">
+  <strong>Worked cell:</strong> C=200, D=300 → Sales=200, OOS=100, profit = 200·200 − 200·100 − 100·80 = <strong>12 000</strong>
+</div>
+</section>
+
+<section id="w1-types">
+<h2><span class="sn">03</span> Three decision types</h2>
+<div class="cg">
+  <div class="cc" onclick="openSB('type1')">
+    <div class="badge b-lo">Type 1</div>
+    <div class="cc-t">Under Certainty</div>
+    <div class="cc-b">All outcomes known in advance. Just pick the best option.</div>
+  </div>
+  <div class="cc" onclick="openSB('type2')">
+    <div class="badge b-warn">Type 2</div>
+    <div class="cc-t">Under Uncertainty</div>
+    <div class="cc-b">Scenarios known; probabilities unknown. Use the five criteria.</div>
+  </div>
+  <div class="cc" onclick="openSB('type3')">
+    <div class="badge b-ok">Type 3</div>
+    <div class="cc-t">Under Risk</div>
+    <div class="cc-b">Probability distribution of scenarios is known. Use EMV / EOL.</div>
+  </div>
+</div>
+</section>
+
+<section id="w1-uncertainty">
+<h2><span class="sn">04</span> Decision criteria under uncertainty</h2>
+<p>No probabilities available. Each criterion encodes a different attitude toward the unknown.</p>
+<div class="cl">
+  <div class="cr" onclick="openSB('maximax')">
+    <div class="cr-name" style="color:var(--hi)">MaxiMax</div>
+    <div class="cr-desc">Best best-case: take row max, pick the largest. Fully optimistic. → Airline: 400 (max=40)</div>
+  </div>
+  <div class="cr" onclick="openSB('maximin')">
+    <div class="cr-name" style="color:var(--bad)">MaxiMin</div>
+    <div class="cr-desc">Best worst-case: take row min, pick the largest. Risk-averse. → Airline: 200 (worst=0 > −20)</div>
+  </div>
+  <div class="cr" onclick="openSB('hurwicz-detail')">
+    <div class="cr-name" style="color:var(--text2)">Hurwicz (α)</div>
+    <div class="cr-desc">Weighted blend: <code>H = α·max + (1−α)·min</code>. At α=0.8 → 200:16, 400:28 → choose 400</div>
+  </div>
+  <div class="cr" onclick="openSB('laplace')">
+    <div class="cr-name" style="color:var(--ok)">Laplace</div>
+    <div class="cr-desc">All scenarios equally likely → simple row average. → 200 avg=9, 400 avg=10 → choose 400</div>
+  </div>
+  <div class="cr" onclick="openSB('minimax')">
+    <div class="cr-name" style="color:var(--warn)">MiniMax Regret</div>
+    <div class="cr-desc">Build regret table, find row max-regret, pick the minimum. → 200:36, 400:20 → choose 400</div>
+  </div>
+</div>
+<h3>Regret table</h3>
+<div class="tw">
+  <table>
+    <thead><tr><th>Decision</th><th>D=100</th><th>D=200</th><th>D=300</th><th>D=400</th><th>Max regret</th></tr></thead>
+    <tbody>
+      <tr><td>200 seats</td><td>0</td><td>0</td><td>8</td><td class="c-bad">36</td><td>36</td></tr>
+      <tr><td>400 seats</td><td>20</td><td>20</td><td>0</td><td>0</td><td class="c-ok">20 ✓</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="note">Regret = col-max − cell · e.g. D=400: best=40, regret(200 seats) = 40−4 = 36</p>
+<div class="ib warn click" onclick="openSB('hurwicz')">
+  <strong>Exam trap:</strong> MaxiMax IS a special case of Hurwicz (α=1). Laplace is NOT — Hurwicz uses only best+worst; Laplace averages all values.
+</div>
+</section>
+
+<section id="w1-risk">
+<h2><span class="sn">05</span> Decision criteria under risk — EMV</h2>
+<p>Probabilities known: P(100)=0.2, P(200)=0.3, P(300)=0.4, P(400)=0.1</p>
+<div class="fc" onclick="openSB('emv-worked')" style="margin:.4rem 0 0">
+  <div class="fl">EMV calculation — airline</div>
+  <div>\(\text{EMV}(200) = 0{\cdot}0.2 + 20{\cdot}0.3 + 12{\cdot}0.4 + 4{\cdot}0.1 = \mathbf{11.2}\)</div>
+  <div style="margin-top:.15rem">\(\text{EMV}(400) = {-}20{\cdot}0.2 + 0{\cdot}0.3 + 20{\cdot}0.4 + 40{\cdot}0.1 = \mathbf{8.0}\)</div>
+  <div class="fn">→ Choose <strong>200 seats</strong> (11.2 > 8.0). Values in k.</div>
+</div>
+</section>
+
+<section id="w1-evpi">
+<h2><span class="sn">06</span> Value of perfect information &amp; EOL</h2>
+<div class="tw">
+  <table>
+    <thead><tr><th></th><th>D=100 (0.2)</th><th>D=200 (0.3)</th><th>D=300 (0.4)</th><th>D=400 (0.1)</th><th>EMV</th></tr></thead>
+    <tbody>
+      <tr><td>200 seats</td><td>0</td><td>20</td><td>12</td><td>4</td><td>11.2</td></tr>
+      <tr><td>400 seats</td><td>−20</td><td>0</td><td>20</td><td>40</td><td>8.0</td></tr>
+      <tr><td>Best/col (VwPI)</td><td class="c-lo">0</td><td class="c-lo">20</td><td class="c-lo">20</td><td class="c-lo">40</td><td class="c-ok">18.0</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="fg">
+  <div class="fc" onclick="openSB('evwpi')">
+    <div class="fl">EVwPI</div>
+    <div>\(0{\cdot}0.2 + 20{\cdot}0.3 + 20{\cdot}0.4 + 40{\cdot}0.1 = \mathbf{18.0}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('evpi-detail')">
+    <div class="fl">EVPI</div>
+    <div>\(\text{EVPI} = 18.0 - 11.2 = \mathbf{6.8}\text{ k}\)</div>
+    <div class="fn">6 800 > 5 000 consultant fee → hire them.</div>
+  </div>
+</div>
+<h3>EOL — Expected Opportunity Loss</h3>
+<div class="tw">
+  <table>
+    <thead><tr><th>Decision</th><th>D=100</th><th>D=200</th><th>D=300</th><th>D=400</th><th>EOL</th></tr></thead>
+    <tbody>
+      <tr><td>200 seats</td><td>0</td><td>0</td><td>8</td><td>36</td><td class="c-ok">6.8 ← min EOL = EVPI</td></tr>
+      <tr><td>400 seats</td><td>20</td><td>20</td><td>0</td><td>0</td><td>10.0</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="ib ok click" onclick="openSB('eol-insight')">
+  <strong>Key insight:</strong> min EOL always equals EVPI. EOL and EMV always select the same optimal decision. Click to see the proof.
+</div>
+</section>
+
+<section id="w1-sensitivity">
+<h2><span class="sn">07</span> Sensitivity analysis</h2>
+<p>Tests whether the optimal decision changes as inputs vary. A <strong style="color:var(--text)">robust model</strong> keeps the same decision across a wide range.</p>
+<div class="fc" style="margin:.4rem 0">
+  <div class="fl">EMV as linear functions of P (probability of positive market)</div>
+  <div>\(\text{EMV}_\text{big}(P) = 380\,000P - 180\,000\)</div>
+  <div style="margin-top:.12rem">\(\text{EMV}_\text{small}(P) = 120\,000P - 20\,000\)</div>
+  <div style="margin-top:.12rem">\(\text{EMV}_\text{nothing}(P) = 0\)</div>
+</div>
+<div class="fg">
+  <div class="fc" onclick="openSB('crossover1')">
+    <div class="fl">Crossover 1 — small vs. nothing</div>
+    <div>\(120\,000P - 20\,000 = 0 \;\Rightarrow\; P = 0.167\)</div>
+  </div>
+  <div class="fc" onclick="openSB('crossover2')">
+    <div class="fl">Crossover 2 — small vs. big</div>
+    <div>\(120\,000P - 20\,000 = 380\,000P - 180\,000 \;\Rightarrow\; P = 0.615\)</div>
+  </div>
+</div>
+<div class="rb">
+  <div class="rr" style="width:16.7%;background:var(--bad-bg);color:var(--bad);border-right:1px solid var(--border)">P&lt;0.167<br>Nothing</div>
+  <div class="rr" style="width:44.8%;background:var(--ok-bg);color:var(--ok);border-right:1px solid var(--border)">0.167 ≤ P &lt; 0.615<br>Small factory</div>
+  <div class="rr" style="flex:1;background:var(--bg3);color:var(--text2)">P ≥ 0.615<br>Big factory</div>
+</div>
+<div class="cw">
+  <div class="cl2">
+    <div class="cli"><div class="ld" style="background:#c8cdd4"></div>Big factory</div>
+    <div class="cli"><div class="ld" style="background:var(--ok)"></div>Small factory</div>
+    <div class="cli"><div class="ld dash"></div>Do nothing</div>
+  </div>
+  <div style="position:relative;width:100%;height:200px">
+    <canvas id="sc" role="img" aria-label="Sensitivity analysis: EMV vs probability of positive market">Crossovers at P=0.167 and P=0.615.</canvas>
+  </div>
+</div>
+</section>
+
+<section id="w1-refcard">
+<h2><span class="sn">∑</span> All formulas — reference card</h2>
+<div class="fg">
+  <div class="fc" onclick="openSB('profit')">
+    <div class="fl">Profit cell</div>
+    <div>\(\pi(d,s) = \min(C,D)\cdot p - C\cdot c - \max(D{-}C,0)\cdot g\)</div>
+  </div>
+  <div class="fc" onclick="openSB('hurwicz')">
+    <div class="fl">Hurwicz</div>
+    <div>\(H(d) = \alpha\cdot\max_s\pi + (1{-}\alpha)\cdot\min_s\pi\)</div>
+  </div>
+  <div class="fc" onclick="openSB('emv')">
+    <div class="fl">EMV</div>
+    <div>\(\text{EMV}(d) = \displaystyle\sum_s \pi(d,s)\cdot P(s)\)</div>
+  </div>
+  <div class="fc" onclick="openSB('evwpi')">
+    <div class="fl">EVwPI</div>
+    <div>\(\text{EVwPI} = \displaystyle\sum_s \max_d\,\pi(d,s)\cdot P(s)\)</div>
+  </div>
+  <div class="fc" onclick="openSB('evpi-detail')">
+    <div class="fl">EVPI</div>
+    <div>\(\text{EVPI} = \text{EVwPI} - \max_d\text{EMV}(d)\)</div>
+  </div>
+  <div class="fc" onclick="openSB('eol-insight')">
+    <div class="fl">EOL &amp; identity</div>
+    <div>\(\text{EOL}(d) = \displaystyle\sum_s r(d,s)\cdot P(s)\)</div>
+    <div style="margin-top:.1rem">\(\min_d\text{EOL}(d) = \text{EVPI}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('regret')">
+    <div class="fl">Regret</div>
+    <div>\(r(d,s) = \max_{d'}\pi(d',s) - \pi(d,s)\)</div>
+  </div>
+  <div class="fc" onclick="openSB('crossover1')">
+    <div class="fl">Sensitivity crossover</div>
+    <div>\(\text{Set }\text{EMV}_A(P) = \text{EMV}_B(P),\;\text{solve }P\)</div>
+  </div>
+</div>
+<p style="font-size:10px;color:var(--text3);margin-top:1.25rem;text-align:center;font-family:var(--fm)">— Next: Decision Trees · Value of Imperfect Information —</p>
+</section>
+
+</div><!-- end week1 -->
+
+
+<!-- ═══════════════════════════════ WEEK 2 ═══════════════════════════════ -->
+<div class="week-page" id="week2">
+
+<div class="hero">
+  <div class="hero-tag">Lecture 2 · Week 2</div>
+  <h1>Decisions Under Risk</h1>
+  <div class="hero-meta">RSM Erasmus University Rotterdam · Pieter van den Berg</div>
+</div>
+
+<!-- W2-00: Formulas at a glance -->
+<section id="w2-formulas">
+<h2><span class="sn">00</span> Formulas at a glance</h2>
+<div class="fg">
+  <div class="fc" onclick="openSB('w2-emv')">
+    <div class="fl">Expected Monetary Value</div>
+    <div>\(\text{EMV}(d) = \displaystyle\sum_{s} \pi(d,s)\cdot P(s)\)</div>
+    <div class="fn">Fold back from right. At squares, take max.</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-evpi')">
+    <div class="fl">EVPI — perfect info</div>
+    <div>\(\text{EVwPI} = \sum_s \max_d\,\pi(d,s)\cdot P(s)\)</div>
+    <div style="margin-top:.12rem">\(\text{EVPI} = \text{EVwPI} - \max_d\text{EMV}(d)\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-bayes')">
+    <div class="fl">Bayes' theorem</div>
+    <div>\(P(S{\mid}P) = \dfrac{P(P{\mid}S)\cdot P(S)}{P(P{\mid}S)\cdot P(S)+P(P{\mid}W)\cdot P(W)}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-evsi')">
+    <div class="fl">EVSI — imperfect info</div>
+    <div>\(\text{EVwSI} = \sum_k P(\text{sig}_k)\cdot\max_d\text{EMV}(d{\mid}\text{sig}_k)\)</div>
+    <div style="margin-top:.12rem">\(\text{EVSI} = \text{EVwSI} - \max_d\text{EMV}(d)\)</div>
+  </div>
+</div>
+<div class="fg">
+  <div class="fc" onclick="openSB('w2-efficiency')">
+    <div class="fl">Efficiency of sample information</div>
+    <div>\(\text{Efficiency} = \dfrac{\text{EVSI}}{\text{EVPI}} \times 100\%\)</div>
+    <div class="fn">How close to perfect is the imperfect information?</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-riskpremium')">
+    <div class="fl">Risk premium</div>
+    <div>\(\text{Risk premium} = \text{EMV} - X\)</div>
+    <div class="fn">Where \(U(X) = \text{EU}\). Find X on the utility curve.</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-eu')">
+    <div class="fl">Expected Utility</div>
+    <div>\(\text{EU} = \sum_s U(\pi(d,s))\cdot P(s)\)</div>
+    <div class="fn">Replace payoffs with utilities, then compute like EMV.</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-joint')">
+    <div class="fl">Joint &amp; conditional probability</div>
+    <div>\(P(A\cap B) = P(A{\mid}B)\cdot P(B)\)</div>
+    <div style="margin-top:.12rem">\(P(A{\mid}B) = \dfrac{P(A\cap B)}{P(B)}\)</div>
+  </div>
+</div>
+</section>
+
+<!-- W2-01: Decision trees -->
+<section id="w2-dtree">
+<h2><span class="sn">01</span> Decision trees</h2>
+<p>A graphical representation of the decision table — especially useful for <strong style="color:var(--text)">sequential decisions</strong>.</p>
+<div class="cg2" style="margin:.4rem 0 .65rem">
+  <div class="cc" onclick="openSB('w2-nodes')">
+    <div class="badge b-bad">■ Square</div>
+    <div class="cc-t">Decision node</div>
+    <div class="cc-b">You choose. Pick the branch with the highest EMV. Prune the rest.</div>
+  </div>
+  <div class="cc" onclick="openSB('w2-nodes')">
+    <div class="badge b-ok">● Circle</div>
+    <div class="cc-t">Event (chance) node</div>
+    <div class="cc-b">Nature chooses. Compute EMV = weighted average of branches. Probabilities must sum to 1.</div>
+  </div>
+</div>
+
+<h3>Market entry example — decision table</h3>
+<p style="font-size:11px;margin-bottom:.35rem">Prior probabilities: <strong style="color:var(--text)">P(Strong) = 0.45</strong>, <strong style="color:var(--text)">P(Weak) = 0.55</strong></p>
+<div class="tw">
+  <table>
+    <thead><tr><th>Decision</th><th>Strong (0.45)</th><th>Weak (0.55)</th><th>EMV</th></tr></thead>
+    <tbody>
+      <tr><td>Aggressive</td><td>30</td><td>−8</td><td>30×0.45+(−8)×0.55 = <strong>9.10</strong></td></tr>
+      <tr><td>Neutral</td><td>20</td><td>7</td><td>20×0.45+7×0.55 = <strong style="color:var(--ok)">12.85 ★</strong></td></tr>
+      <tr><td>Careful</td><td>5</td><td>15</td><td>5×0.45+15×0.55 = <strong>10.50</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="ib ok">★ <strong>Optimal decision without research: Neutral, EMV = 12.85</strong></div>
+
+<h3>Tree fold-back: how to solve</h3>
+<div class="steps">
+  <div class="sr"><div class="sn2">1</div><div class="st"><strong>Start from the right</strong> (leaf nodes = raw payoffs)</div></div>
+  <div class="sr"><div class="sn2">2</div><div class="st">At each <strong>circle</strong>: compute EMV = Σ (payoff × prob). Write it above the node.</div></div>
+  <div class="sr"><div class="sn2">3</div><div class="st">At each <strong>square</strong>: take the maximum EMV branch. Strike through the rest.</div></div>
+  <div class="sr"><div class="sn2">4</div><div class="st">Repeat leftward until you reach the root.</div></div>
+</div>
+</section>
+
+<!-- W2-02: EVPI -->
+<section id="w2-evpi">
+<h2><span class="sn">02</span> Value of perfect information (EVPI)</h2>
+<p>Swap decision and event nodes. The event (market state) comes first; you decide <em>after</em> learning the state. Compute EVwPI = expected payoff of always choosing optimally.</p>
+
+<div class="tw">
+  <table>
+    <thead><tr><th>If market is…</th><th>Best decision</th><th>Payoff</th><th>× P</th><th>Contribution</th></tr></thead>
+    <tbody>
+      <tr><td>Strong (0.45)</td><td>Aggressive</td><td>30</td><td>0.45</td><td>13.50</td></tr>
+      <tr><td>Weak (0.55)</td><td>Careful</td><td>15</td><td>0.55</td><td class="c-ok">8.25</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Value chain display -->
+<div class="vc" onclick="openSB('w2-evpi')">
+  <div class="vb"><div class="vl">EVwPI</div><div class="vv">21.75</div></div>
+  <div class="va">−</div>
+  <div class="vb"><div class="vl">max EMV</div><div class="vv">12.85</div></div>
+  <div class="va">=</div>
+  <div class="vb hi"><div class="vl">EVPI</div><div class="vv">8.90</div></div>
+  <div class="va" style="font-size:9px;color:var(--text3);padding-left:8px">→ max you'd pay<br>for a crystal ball</div>
+</div>
+</section>
+
+<!-- W2-03: Conditional probabilities -->
+<section id="w2-condprob">
+<h2><span class="sn">03</span> Conditional probabilities &amp; Bayes' theorem</h2>
+<p>Research gives a <strong style="color:var(--text)">Positive (P)</strong> or <strong style="color:var(--text)">Negative (N)</strong> signal, but it's not 100% accurate. We know the <em>reliability</em> — then use Bayes to flip the conditioning.</p>
+
+<div class="cg2" style="margin:.4rem 0">
+  <div class="cc" onclick="openSB('w2-bayes')">
+    <div class="badge b-ok">Correct predictions</div>
+    <div class="cc-t">P(P|S) = 0.60 · P(N|W) = 0.70</div>
+    <div class="cc-b">Research says positive when market is strong, and negative when weak.</div>
+  </div>
+  <div class="cc" onclick="openSB('w2-bayes')">
+    <div class="badge b-bad">Wrong predictions</div>
+    <div class="cc-t">P(N|S) = 0.40 · P(P|W) = 0.30</div>
+    <div class="cc-b">False-negative: market strong but signal negative. False-positive: market weak but signal positive.</div>
+  </div>
+</div>
+
+<h3>Step 1 — build the joint probability table</h3>
+<p style="font-size:11px;margin-bottom:.35rem">Each cell = P(signal|state) × P(state). Row sums give P(signal).</p>
+<div class="tw">
+  <table>
+    <thead><tr><th></th><th>Strong (0.45)</th><th>Weak (0.55)</th><th>P(signal)</th></tr></thead>
+    <tbody>
+      <tr><td>Positive (P)</td><td>0.60×0.45 = <strong>0.270</strong></td><td>0.30×0.55 = <strong>0.165</strong></td><td class="c-blue">0.435</td></tr>
+      <tr><td>Negative (N)</td><td>0.40×0.45 = <strong>0.180</strong></td><td>0.70×0.55 = <strong>0.385</strong></td><td class="c-blue">0.565</td></tr>
+      <tr><td style="color:var(--text3);font-size:10px">Col total</td><td>0.45</td><td>0.55</td><td>1.00</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Step 2 — compute posterior probabilities (divide cell ÷ row total)</h3>
+<div class="tw">
+  <table>
+    <thead><tr><th>Signal received</th><th>P(Strong | signal)</th><th>P(Weak | signal)</th></tr></thead>
+    <tbody>
+      <tr><td>Positive (P)</td><td class="c-ok">0.270 / 0.435 = <strong>0.621</strong></td><td>0.165 / 0.435 = 0.379</td></tr>
+      <tr><td>Negative (N)</td><td>0.180 / 0.565 = 0.319</td><td class="c-ok">0.385 / 0.565 = <strong>0.681</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="ib blue click" onclick="openSB('w2-baseratefallacy')">
+  <strong>Base-rate fallacy:</strong> Even a 99% accurate scanner gives P(bomb|alarm) ≈ 0.5% when bombs are rare (0.01%). The prior base rate dominates. Click for the full calculation.
+</div>
+</section>
+
+<!-- W2-04: EVSI -->
+<section id="w2-evsi">
+<h2><span class="sn">04</span> Value of imperfect information (EVSI)</h2>
+<p>Now use posterior probabilities inside the tree. For each signal outcome, find the best decision using updated probabilities, then weight by P(signal).</p>
+
+<h3>EMV per signal outcome (using posterior probs)</h3>
+<div class="tw">
+  <table>
+    <thead><tr><th>Signal</th><th>Best decision</th><th>EMV | signal</th><th>P(signal)</th><th>Contribution</th></tr></thead>
+    <tbody>
+      <tr><td>Positive (0.435)</td><td>Aggressive<br><span style="font-size:9px;color:var(--text3)">30×0.621+(−8)×0.379 = 15.59</span></td><td class="c-ok">15.59</td><td>0.435</td><td>6.78</td></tr>
+      <tr><td>Negative (0.565)</td><td>Careful<br><span style="font-size:9px;color:var(--text3)">5×0.319+15×0.681 = 11.81</span></td><td class="c-ok">11.81</td><td>0.565</td><td>6.67</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="note">For Negative signal: Careful (11.81) > Neutral (0.319×20+0.681×7 = 11.15) — always verify all three options.</p>
+
+<!-- Value chain -->
+<div class="vc" onclick="openSB('w2-evsi')">
+  <div class="vb"><div class="vl">EVwSI</div><div class="vv">13.45</div></div>
+  <div class="va">−</div>
+  <div class="vb"><div class="vl">max EMV</div><div class="vv">12.85</div></div>
+  <div class="va">=</div>
+  <div class="vb hi"><div class="vl">EVSI</div><div class="vv">0.60</div></div>
+  <div class="va">÷</div>
+  <div class="vb"><div class="vl">EVPI</div><div class="vv">8.90</div></div>
+  <div class="va">=</div>
+  <div class="vb"><div class="vl">Efficiency</div><div class="vv">6.7%</div></div>
+</div>
+
+<div class="fg">
+  <div class="fc" onclick="openSB('w2-evsi')">
+    <div class="fl">Interpretation</div>
+    <div>\(\text{EVwSI} = 0.435\times15.59 + 0.565\times11.81 = \mathbf{13.45}\)</div>
+    <div class="fn">With research: EMV 13.45. Without: 12.85. Gain = 0.60. Worth paying up to 0.60 for this research.</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-quizanswer')">
+    <div class="fl">Quiz — always true?</div>
+    <div>\(0 \leq \text{EVSI} \leq \text{EVPI}\)</div>
+    <div class="fn">EVSI &gt; 0 is NOT guaranteed. EVSI ≤ EVPI is always true. Answer: d) only (ii).</div>
+  </div>
+</div>
+
+<div class="ib warn">
+  <strong>Decision:</strong> Conduct research only if its cost &lt; EVSI = 0.60. Research producing EVSI = 0 gives no benefit — you'd make the same decision regardless of the signal.
+</div>
+</section>
+
+<!-- W2-05: Utility functions -->
+<section id="w2-utility">
+<h2><span class="sn">05</span> Utility functions &amp; risk attitudes</h2>
+<p>EMV assumes the decision-maker is <strong style="color:var(--text)">risk-neutral</strong>. In reality, people have different risk attitudes that can <em>reverse</em> the optimal decision.</p>
+
+<div class="cg" style="margin:.4rem 0">
+  <div class="cc" onclick="openSB('w2-riskavoider')">
+    <div class="badge b-bad">Risk-avoider</div>
+    <div class="cc-t">Concave utility curve</div>
+    <div class="cc-b">Diminishing marginal utility of money. U(EMV) &gt; EU. Needs &gt; 50% to play a fair coin-flip game.</div>
+  </div>
+  <div class="cc" onclick="openSB('w2-riskneutral')">
+    <div class="badge b-lo">Risk-neutral</div>
+    <div class="cc-t">Linear utility curve</div>
+    <div class="cc-b">U(x) ∝ x. U(EMV) = EU. Happy to play any game with positive EMV.</div>
+  </div>
+  <div class="cc" onclick="openSB('w2-riskseeker')">
+    <div class="badge b-warn">Risk-seeker</div>
+    <div class="cc-t">Convex utility curve</div>
+    <div class="cc-b">Increasing marginal utility. U(EMV) &lt; EU. Plays even unfair games for the thrill.</div>
+  </div>
+</div>
+
+<!-- Utility curve mini-visualizations -->
+<div class="utility-vis">
+  <div class="uv" onclick="openSB('w2-riskavoider')">
+    <div class="uv-label" style="color:var(--bad)">Risk-avoider — concave</div>
+    <canvas id="uc1" role="img" aria-label="Concave utility curve for risk-avoider"></canvas>
+  </div>
+  <div class="uv" onclick="openSB('w2-riskneutral')">
+    <div class="uv-label" style="color:var(--text3)">Risk-neutral — linear</div>
+    <canvas id="uc2" role="img" aria-label="Linear utility curve for risk-neutral"></canvas>
+  </div>
+  <div class="uv" onclick="openSB('w2-riskseeker')">
+    <div class="uv-label" style="color:var(--warn)">Risk-seeker — convex</div>
+    <canvas id="uc3" role="img" aria-label="Convex utility curve for risk-seeker"></canvas>
+  </div>
+</div>
+
+<h3>Determining risk sensitivity — the indifference method</h3>
+<p>Set U(best) = 1 and U(worst) = 0. For intermediate value x, ask: <em>"What probability p of winning (best) vs. 1−p of losing (worst) makes you indifferent to receiving x for certain?"</em> → U(x) = p.</p>
+
+<div class="fc" onclick="openSB('w2-riskavoider')" style="margin:.4rem 0">
+  <div class="fl">Worked example — risk-avoiding decision maker</div>
+  <div>U(100)=0.1, U(125)=0.5, U(150)=0.75, U(175)=0.85, U(200)=0.9</div>
+  <div style="margin-top:.3rem">\(\text{EU} = 0.5\times U(100) + 0.5\times U(200) = 0.5\times0.1 + 0.5\times0.9 = \mathbf{0.50}\)</div>
+  <div style="margin-top:.2rem">\(U(\text{EMV}) = U(150) = \mathbf{0.75} > 0.50 = \text{EU} \;\checkmark\;\text{risk-avoiding}\)</div>
+  <div class="fn">Risk-free value X: U(X)=0.50 → X=125. Risk premium = EMV − X = 150 − 125 = <strong>&euro;25</strong></div>
+</div>
+
+<h3>Summary — risk attitudes at a glance</h3>
+<div class="tw">
+  <table>
+    <thead><tr><th>Attitude</th><th>Curve</th><th>U(EMV) vs EU</th><th>Willing to pay above EMV?</th><th>Real example</th></tr></thead>
+    <tbody>
+      <tr><td>Risk-avoider</td><td>Concave ∩</td><td class="c-ok">U(EMV) &gt; EU</td><td>No — needs more than EMV</td><td>Insurance buyer</td></tr>
+      <tr><td>Risk-neutral</td><td>Linear —</td><td>U(EMV) = EU</td><td>Exactly EMV</td><td>Rational agent</td></tr>
+      <tr><td>Risk-seeker</td><td>Convex ∪</td><td class="c-warn">U(EMV) &lt; EU</td><td>Yes — pays above EMV</td><td>Lottery player</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<!-- W2-06: Refcard -->
+<section id="w2-refcard">
+<h2><span class="sn">∑</span> All formulas — Week 2 reference card</h2>
+<div class="fg">
+  <div class="fc" onclick="openSB('w2-emv')">
+    <div class="fl">EMV (tree fold-back)</div>
+    <div>\(\text{EMV}(d) = \displaystyle\sum_s \pi(d,s)\cdot P(s)\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-evpi')">
+    <div class="fl">EVwPI &amp; EVPI</div>
+    <div>\(\text{EVwPI} = \sum_s \max_d\pi(d,s)\cdot P(s)\)</div>
+    <div style="margin-top:.1rem">\(\text{EVPI} = \text{EVwPI} - \max_d\text{EMV}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-joint')">
+    <div class="fl">Joint probability</div>
+    <div>\(P(A\cap B) = P(A{\mid}B)\cdot P(B)\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-bayes')">
+    <div class="fl">Bayes' theorem</div>
+    <div>\(P(S{\mid}P)=\dfrac{P(P{\mid}S)\cdot P(S)}{P(P)}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-evsi')">
+    <div class="fl">EVwSI &amp; EVSI</div>
+    <div>\(\text{EVwSI}=\sum_k P(k)\cdot\max_d\text{EMV}(d{\mid}k)\)</div>
+    <div style="margin-top:.1rem">\(\text{EVSI}=\text{EVwSI}-\max_d\text{EMV}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-efficiency')">
+    <div class="fl">Efficiency</div>
+    <div>\(\text{Eff}=\dfrac{\text{EVSI}}{\text{EVPI}}\times100\%\)</div>
+    <div class="fn">Always: \(0\leq\text{EVSI}\leq\text{EVPI}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-eu')">
+    <div class="fl">Expected Utility</div>
+    <div>\(\text{EU}=\displaystyle\sum_s U(\pi_s)\cdot P(s)\)</div>
+  </div>
+  <div class="fc" onclick="openSB('w2-riskpremium')">
+    <div class="fl">Risk premium</div>
+    <div>\(\text{RP}=\text{EMV}-X\;\;\text{where }U(X)=\text{EU}\)</div>
+  </div>
+</div>
+
+<!-- Master value chain -->
+<h3>Master value chain — all key numbers (market entry example)</h3>
+<div style="overflow-x:auto;margin:.4rem 0">
+<div class="vc">
+  <div class="vb"><div class="vl">max EMV (no info)</div><div class="vv">12.85</div></div>
+  <div class="va">→</div>
+  <div class="vb"><div class="vl">EVwSI</div><div class="vv">13.45</div></div>
+  <div class="va">→</div>
+  <div class="vb"><div class="vl">EVwPI</div><div class="vv">21.75</div></div>
+  <div class="va">|</div>
+  <div class="vb"><div class="vl">EVSI</div><div class="vv">0.60</div></div>
+  <div class="va">&lt;</div>
+  <div class="vb hi"><div class="vl">EVPI</div><div class="vv">8.90</div></div>
+  <div class="va">|</div>
+  <div class="vb"><div class="vl">Efficiency</div><div class="vv">6.7%</div></div>
+</div>
+</div>
+<p style="font-size:10px;color:var(--text3);margin-top:1.25rem;text-align:center;font-family:var(--fm)">— Next: Monte Carlo Simulation —</p>
+</section>
+
+</div><!-- end week2 -->
+
+
+<!-- ═══ OM WEEK 1 ═══ -->
+<div class="week-page" id="om-week1" data-cat="om">
+<div class="hero">
+  <div class="hero-tag">OM &middot; Lecture 1 &middot; Week 1</div>
+  <h1>Operations Management &mdash; Overview, Queueing &amp; Learning</h1>
+  <div class="hero-meta">BT1214 &middot; RSM Erasmus University Rotterdam</div>
+</div>
+
+<section id="om1-formulas">
+<h2><span class="sn">00</span> All formulas at a glance</h2>
+<div class="fg">
+  <div class="fc" onclick="openSB('om-sf-prod')">
+    <div class="fl">Single-factor productivity</div>
+    <div>\(P = \dfrac{	ext{Units produced}}{	ext{Input used}}\)</div>
+    <div class="fn">One input only (labour-hrs, kg material, etc.)</div>
+  </div>
+  <div class="fc" onclick="openSB('om-mf-prod')">
+    <div class="fl">Multi-factor productivity</div>
+    <div>\(P = \dfrac{	ext{Output}}{L + M + E + C + 	ext{misc}}\)</div>
+    <div class="fn">All inputs in the same unit (e.g. &euro;)</div>
+  </div>
+  <div class="fc" onclick="openSB('om-lc-arith')">
+    <div class="fl">Learning curve &mdash; arithmetic (doubling rule)</div>
+    <div>\(T_{2N} = L \cdot T_N\)</div>
+    <div class="fn">Only valid when quantity exactly doubles</div>
+  </div>
+  <div class="fc" onclick="openSB('om-lc-log')">
+    <div class="fl">Learning curve &mdash; logarithmic (any N)</div>
+    <div>\(T_N = T_1 \cdot N^{\,\log L / \log 2}\)</div>
+    <div class="fn"><em>T</em><sub>1</sub> = time for 1st unit &middot; formula in exam appendix</div>
+  </div>
+  <div class="fc" onclick="openSB('om-mm1')">
+    <div class="fl">M/M/1 &mdash; system time &amp; length</div>
+    <div>\(W_s = \dfrac{1}{\mu-\lambda} \qquad L_s = \dfrac{\lambda}{\mu-\lambda}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('om-mm1')">
+    <div class="fl">M/M/1 &mdash; queue wait &amp; length</div>
+    <div>\(W_q = \dfrac{\lambda}{\mu(\mu-\lambda)} \qquad L_q = \dfrac{\lambda^2}{\mu(\mu-\lambda)}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('om-md1')">
+    <div class="fl">M/D/1 &mdash; queue wait &amp; length (constant service)</div>
+    <div>\(W_q = \dfrac{\lambda}{2\mu(\mu-\lambda)} \qquad L_q = \dfrac{\lambda^2}{2\mu(\mu-\lambda)}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('om-util')">
+    <div class="fl">Utilization &middot; idle prob &middot; P(n &gt; k)</div>
+    <div>\(
+ho=\dfrac{\lambda}{\mu} \quad P_0=1-
+ho \quad P_{n>k}=
+ho^{\,k+1}\)</div>
+  </div>
+  <div class="fc" onclick="openSB('om-little')">
+    <div class="fl">Little&rsquo;s law (always true)</div>
+    <div>\(L_s = \lambda W_s \qquad L_q = \lambda W_q\)</div>
+  </div>
+  <div class="fc" onclick="openSB('om-wqws')">
+    <div class="fl">Queue &harr; system conversion</div>
+    <div>\(W_q = W_s - \dfrac{1}{\mu} \qquad L_q = L_s - \dfrac{\lambda}{\mu}\)</div>
+  </div>
+</div>
+</section>
+
+<section id="om1-basics">
+<h2><span class="sn">01</span> What is operations management?</h2>
+<p><strong style="color:var(--hi)">Operations management (OM)</strong> creates value by transforming inputs into goods and services. Operations managers plan, organise, staff, lead and control this transformation.</p>
+<div class="cg">
+  <div class="cc" onclick="openSB('om-3fn')">
+    <div class="badge b-blue">3 essential functions</div>
+    <div class="cc-t">Marketing &middot; Ops &middot; Finance</div>
+    <div class="cc-b">Marketing generates demand. Operations creates the product. Finance/Accounting tracks performance and collects money.</div>
+  </div>
+  <div class="cc" onclick="openSB('om-spectrum')">
+    <div class="badge b-lo">Goods vs services spectrum</div>
+    <div class="cc-t">Most products are a mix</div>
+    <div class="cc-b">Automobile &asymp;75% good. Restaurant meal &asymp;50/50. Counselling &asymp;100% service.</div>
+  </div>
+  <div class="cc" onclick="openSB('om-areas')">
+    <div class="badge b-ok">Three course areas</div>
+    <div class="cc-t">Performance &middot; Process &middot; Planning</div>
+    <div class="cc-b">Area 1: Learning &amp; Queuing. Area 2: Quality, Layout, Capacity. Area 3: Inventory, MRP, Scheduling.</div>
+  </div>
+</div>
+</section>
+
+<section id="om1-productivity">
+<h2><span class="sn">02</span> Productivity</h2>
+<p>Productivity = output relative to input. Productivity growth is the main driver of rising living standards.</p>
+<div class="fg">
+  <div class="fc" onclick="openSB('om-sf-prod')">
+    <div class="fl">Single-factor example</div>
+    <div>\(\dfrac{1{,}000	ext{ burgers}}{500	ext{ hrs}} = \mathbf{2}\) burgers/hr</div>
+  </div>
+  <div class="fc" onclick="openSB('om-mf-prod')">
+    <div class="fl">Multi-factor example</div>
+    <div>\(\dfrac{1{,}100}{(500	imes20)+1{,}000} = \dfrac{1{,}100}{11{,}000} = \mathbf{0.10}\) burgers/&euro;</div>
+    <div class="fn">Labour &euro;10 000 + equipment &euro;1 000</div>
+  </div>
+</div>
+<div class="ib blue"><strong>Rate vs time:</strong> If service time = 20 sec &rarr; &mu; = 3600/20 = <strong>180 per hour</strong>. Never plug the time in where the rate goes.</div>
+</section>
+
+<section id="om1-learning">
+<h2><span class="sn">03</span> Learning curves (Module E)</h2>
+<p>Each time production doubles, unit time multiplies by the <strong style="color:var(--hi)">learning rate L</strong>. The curve flattens as volume grows.</p>
+<div class="cg2">
+  <div class="cc" onclick="openSB('om-lc-arith')">
+    <div class="badge b-lo">Arithmetic</div>
+    <div class="cc-t">T<sub>2N</sub> = L &middot; T<sub>N</sub></div>
+    <div class="cc-b">Only at doubling points. L=0.60, T<sub>1</sub>=25 min &rarr; T<sub>2</sub>=15, T<sub>4</sub>=9, T<sub>8</sub>=5.4 min.</div>
+  </div>
+  <div class="cc" onclick="openSB('om-lc-log')">
+    <div class="badge b-blue">Logarithmic</div>
+    <div class="cc-t">T<sub>N</sub> = T<sub>1</sub> &middot; N<sup>log L / log 2</sup></div>
+    <div class="cc-b">Works for any N. Rearrange to solve for L, T<sub>1</sub>, or N when one is unknown.</div>
+  </div>
+</div>
+<h3>Exam example &mdash; shipyard</h3>
+<div class="fc" onclick="openSB('om-lc-exam')">
+  <div class="fl">17th ship &le; 65 days &middot; T<sub>1</sub> = 100 days &middot; find minimum L</div>
+  <div>\(65 = 100\cdot 17^{\,\log L/\log 2} \;\Rightarrow\; \log L = \dfrac{\log(0.65)\cdot\log 2}{\log 17} \;\Rightarrow\; \mathbf{L = 0.90}\)</div>
+</div>
+</section>
+
+<section id="om1-queue-intro">
+<h2><span class="sn">04</span> Queuing / waiting line theory</h2>
+<p>First studied by A.K. Erlang (1913). Core trade-off: <strong style="color:var(--hi)">cost of service capacity</strong> vs <strong style="color:var(--hi)">cost of waiting</strong>. Optimal = minimum total cost.</p>
+<div class="cg">
+  <div class="cc" onclick="openSB('om-qterms')">
+    <div class="badge b-lo">Terminology</div>
+    <div class="cc-t">Queue &middot; Arrival &middot; Channel &middot; Phase</div>
+    <div class="cc-b">Queue = waiting line. Channel = # servers. Phase = # service steps. Discipline = order of service (usually FIFO).</div>
+  </div>
+  <div class="cc" onclick="openSB('om-qexamples')">
+    <div class="badge b-ok">Real examples</div>
+    <div class="cc-t">Bank &middot; Harbour &middot; Assembly</div>
+    <div class="cc-b">Bank: customers arrive, tellers serve, deposit is the process. Harbour: ships arrive, cranes serve, loading is the process.</div>
+  </div>
+  <div class="cc" onclick="openSB('om-qcost')">
+    <div class="badge b-warn">Cost trade-off</div>
+    <div class="cc-t">Service cost &uarr; &rarr; wait cost &darr;</div>
+    <div class="cc-b">More servers = higher service cost but shorter queues. Neither extreme is optimal. Minimise total.</div>
+  </div>
+</div>
+</section>
+
+<section id="om1-distributions">
+<h2><span class="sn">05</span> Probability distributions</h2>
+<div class="cg2">
+  <div class="cc" onclick="openSB('om-poisson')">
+    <div class="badge b-blue">Poisson</div>
+    <div class="cc-t">Arrival counts per interval</div>
+    <div class="cc-b">Mean = &lambda;. Integer-valued. \(P(x)=e^{-\lambda}\lambda^x/x!\). Example: number of customers in 15 min.</div>
+  </div>
+  <div class="cc" onclick="openSB('om-negexp')">
+    <div class="badge b-ok">Negative exponential</div>
+    <div class="cc-t">Service times (random)</div>
+    <div class="cc-b">Mean rate = &mu;. Mean time = 1/&mu;. \(f(t>x)=e^{-\mu x}\). Memoryless: past time gives no info about future.</div>
+  </div>
+</div>
+</section>
+
+<section id="om1-models">
+<h2><span class="sn">06</span> Queuing models: M/M/1, M/D/1, M/M/S</h2>
+<div class="cl">
+  <div class="cr" onclick="openSB('om-notation')">
+    <div class="cr-name" style="color:var(--blue)">1st letter</div>
+    <div class="cr-desc"><strong>Arrival process.</strong> M = Poisson distributed.</div>
+  </div>
+  <div class="cr" onclick="openSB('om-notation')">
+    <div class="cr-name" style="color:var(--ok)">2nd letter</div>
+    <div class="cr-desc"><strong>Service process.</strong> M = neg. exponential (random) &middot; D = deterministic (constant, exact).</div>
+  </div>
+  <div class="cr" onclick="openSB('om-notation')">
+    <div class="cr-name" style="color:var(--warn)">3rd letter</div>
+    <div class="cr-desc"><strong>Number of servers.</strong> 1 = single channel &middot; S = multiple parallel channels.</div>
+  </div>
+</div>
+<div class="tw" style="margin:.5rem 0">
+  <table>
+    <thead><tr><th>Model</th><th>Arrivals</th><th>Service</th><th>Servers</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge b-blue">M/M/1</span></td><td>Poisson</td><td>Neg. exp.</td><td>1</td><td>Info booth, coffee corner</td></tr>
+      <tr><td><span class="badge b-warn">M/D/1</span></td><td>Poisson</td><td>Constant</td><td>1</td><td>Automated car wash, vending machine</td></tr>
+      <tr><td><span class="badge b-ok">M/M/S</span></td><td>Poisson</td><td>Neg. exp.</td><td>S&gt;1</td><td>Bank tellers, airline check-in</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="ib ok"><strong>M/D/1 vs M/M/1:</strong> Constant service time gives exactly <strong>half</strong> the queue length of M/M/1 at the same &lambda; and &mu;. Eliminating variability is powerful.</div>
+<div class="ib blue click" onclick="openSB('om-mms')"><strong>M/M/S:</strong> Use the lookup table in the exam appendix &mdash; direct formulas are too complex. Find P<sub>0</sub> from table, then derive L<sub>q</sub>, W<sub>q</sub>, W<sub>s</sub>. Click to see method.</div>
+</section>
+
+<section id="om1-steps">
+<h2><span class="sn">07</span> 5-step exam method &amp; worked examples</h2>
+<div class="steps">
+  <div class="sr"><div class="sn2">1</div><div class="st"><strong>Identify the model</strong> &mdash; M/M/1, M/D/1, or M/M/S?</div></div>
+  <div class="sr"><div class="sn2">2</div><div class="st"><strong>Find &lambda; and &mu;</strong> &mdash; same time unit. Service time = 20 sec &rarr; &mu; = 180/hr.</div></div>
+  <div class="sr"><div class="sn2">3</div><div class="st"><strong>Identify performance measure</strong> &mdash; W<sub>q</sub>, W<sub>s</sub>, L<sub>q</sub>, L<sub>s</sub>, &rho;, P<sub>0</sub>, or P(n&gt;k)?</div></div>
+  <div class="sr"><div class="sn2">4</div><div class="st"><strong>Select formula</strong> from appendix. M/M/S: use lookup table, then W = L/&lambda;.</div></div>
+  <div class="sr"><div class="sn2">5</div><div class="st"><strong>Plug in and compute.</strong></div></div>
+</div>
+<div class="fg">
+  <div class="fc" onclick="openSB('om-coffee')">
+    <div class="fl">Coffee corner &mdash; M/M/1 &middot; &lambda;=60/hr &middot; &mu;=180/hr &middot; find W<sub>s</sub></div>
+    <div>\(W_s = \dfrac{1}{180-60} = \dfrac{1}{120}	ext{ hr} = \mathbf{30	ext{ sec total}}\)</div>
+    <div class="fn">W<sub>q</sub> = 30 &minus; 20 = 10 sec waiting. L<sub>q</sub> = 60 &times; (10/3600) = 0.17 people.</div>
+  </div>
+  <div class="fc" onclick="openSB('om-vending')">
+    <div class="fl">Vending machine &mdash; M/D/1 &middot; &lambda;=144/hr &middot; &mu;=240/hr &middot; find L<sub>q</sub></div>
+    <div>\(L_q = \dfrac{144^2}{2\cdot240\cdot(240-144)} = \dfrac{20{,}736}{46{,}080} = \mathbf{0.45}\)</div>
+    <div class="fn">Answer B. On average 0.45 people waiting in queue.</div>
+  </div>
+</div>
+</section>
+
+<section id="om1-refcard">
+<h2><span class="sn">&sum;</span> All formulas &mdash; OM Week 1</h2>
+<div class="fg">
+  <div class="fc"><div class="fl">Single-factor productivity</div><div>\(P = 	ext{Output}/	ext{Input}\)</div></div>
+  <div class="fc"><div class="fl">Multi-factor productivity</div><div>\(P = 	ext{Output}/(L+M+E+C)\)</div></div>
+  <div class="fc"><div class="fl">Learning &mdash; arithmetic</div><div>\(T_{2N} = L\cdot T_N\)</div></div>
+  <div class="fc"><div class="fl">Learning &mdash; logarithmic</div><div>\(T_N = T_1\cdot N^{\log L/\log 2}\)</div></div>
+  <div class="fc"><div class="fl">M/M/1 W<sub>s</sub> &middot; L<sub>s</sub></div><div>\(W_s=	frac{1}{\mu-\lambda}\;\;L_s=	frac{\lambda}{\mu-\lambda}\)</div></div>
+  <div class="fc"><div class="fl">M/M/1 W<sub>q</sub> &middot; L<sub>q</sub></div><div>\(W_q=	frac{\lambda}{\mu(\mu-\lambda)}\;\;L_q=	frac{\lambda^2}{\mu(\mu-\lambda)}\)</div></div>
+  <div class="fc"><div class="fl">M/D/1 W<sub>q</sub> &middot; L<sub>q</sub></div><div>\(W_q=	frac{\lambda}{2\mu(\mu-\lambda)}\;\;L_q=	frac{\lambda^2}{2\mu(\mu-\lambda)}\)</div></div>
+  <div class="fc"><div class="fl">&rho; &middot; P<sub>0</sub> &middot; P(n&gt;k)</div><div>\(
+ho=	frac{\lambda}{\mu}\;\;P_0=1-
+ho\;\;P_{n>k}=
+ho^{k+1}\)</div></div>
+  <div class="fc"><div class="fl">Little&rsquo;s law</div><div>\(L_s=\lambda W_s\;\;L_q=\lambda W_q\)</div></div>
+  <div class="fc"><div class="fl">Queue &harr; system</div><div>\(W_q=W_s-	frac{1}{\mu}\;\;L_q=L_s-	frac{\lambda}{\mu}\)</div></div>
+</div>
+<p style="font-size:10px;color:var(--text3);margin-top:1.25rem;text-align:center;font-family:var(--fm)">&mdash; Upload Week 2 slides to unlock next section &mdash;</p>
+</section>
+</div><!-- end om-week1 -->
+
+<!-- OM WEEKS 2-7: locked placeholders -->
+<div class="week-page" id="om-week2" data-cat="om"><div class="hero"><div class="hero-tag">OM &middot; Week 2</div><h1>Process Design &amp; Strategy</h1><div class="hero-meta">BT1214 &middot; Ch 2, 5, 7</div></div><div style="margin:3rem auto;max-width:340px;text-align:center;padding:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem">Coming soon</div><div style="font-size:13px;color:var(--text2)">Upload the Week 2 lecture slides to unlock this section.</div></div></div>
+<div class="week-page" id="om-week3" data-cat="om"><div class="hero"><div class="hero-tag">OM &middot; Week 3</div><h1>Layout &amp; Human Resources</h1><div class="hero-meta">BT1214 &middot; Ch 9, 10</div></div><div style="margin:3rem auto;max-width:340px;text-align:center;padding:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem">Coming soon</div><div style="font-size:13px;color:var(--text2)">Upload the Week 3 lecture slides to unlock this section.</div></div></div>
+<div class="week-page" id="om-week4" data-cat="om"><div class="hero"><div class="hero-tag">OM &middot; Week 4</div><h1>Inventory Management</h1><div class="hero-meta">BT1214 &middot; Ch 12</div></div><div style="margin:3rem auto;max-width:340px;text-align:center;padding:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem">Coming soon</div><div style="font-size:13px;color:var(--text2)">Upload the Week 4 lecture slides to unlock this section.</div></div></div>
+<div class="week-page" id="om-week5" data-cat="om"><div class="hero"><div class="hero-tag">OM &middot; Week 5</div><h1>Aggregate Planning &amp; MRP</h1><div class="hero-meta">BT1214 &middot; Ch 13, 14</div></div><div style="margin:3rem auto;max-width:340px;text-align:center;padding:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem">Coming soon</div><div style="font-size:13px;color:var(--text2)">Upload the Week 5 lecture slides to unlock this section.</div></div></div>
+<div class="week-page" id="om-week6" data-cat="om"><div class="hero"><div class="hero-tag">OM &middot; Week 6</div><h1>Scheduling &amp; JIT / Lean</h1><div class="hero-meta">BT1214 &middot; Ch 15, 16</div></div><div style="margin:3rem auto;max-width:340px;text-align:center;padding:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem">Coming soon</div><div style="font-size:13px;color:var(--text2)">Upload the Week 6 lecture slides to unlock this section.</div></div></div>
+<div class="week-page" id="om-week7" data-cat="om"><div class="hero"><div class="hero-tag">OM &middot; Week 7</div><h1>Master Formula Reference</h1><div class="hero-meta">BT1214 &middot; All chapters</div></div><div style="margin:3rem auto;max-width:340px;text-align:center;padding:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem">Coming soon</div><div style="font-size:13px;color:var(--text2)">Upload the Week 7 lecture slides to unlock this section.</div></div></div>
+</main>
+</div><!-- end layout -->
+
+<!-- SIDEBAR -->
+<aside class="sb" id="sb">
+  <div class="sb-inner">
+    <button class="sb-close" onclick="closeSB()">✕</button>
+    <div id="sb-content"></div>
+  </div>
+</aside>
+
+<script>
+/* ─── TOC definitions per week ─── */
+const TOCS={
+  qdm:{
+    1:[
+      {id:'w1-formulas',label:'Formula reference'},
+    {id:'w1-intro',label:'Introduction'},
+    {id:'w1-dtable',label:'Decision table'},
+    {id:'w1-types',label:'Three decision types'},
+    {id:'w1-uncertainty',label:'Criteria: uncertainty'},
+    {id:'w1-risk',label:'Criteria: risk / EMV'},
+    {id:'w1-evpi',label:'EVPI & EOL'},
+    {id:'w1-sensitivity',label:'Sensitivity analysis'},
+      {id:'w1-refcard',label:'All formulas'}
+    ],
+    2:[
+      {id:'w2-formulas',label:'Formula reference'},
+      {id:'w2-dtree',label:'Decision trees'},
+      {id:'w2-evpi',label:'EVPI — perfect info'},
+      {id:'w2-condprob',label:'Conditional probs & Bayes'},
+      {id:'w2-evsi',label:'EVSI — imperfect info'},
+      {id:'w2-utility',label:'Utility functions'},
+      {id:'w2-refcard',label:'All formulas'}
+    ]
+  },
+  om:{
+    1:[
+      {id:'om1-formulas',label:'Formula reference'},
+      {id:'om1-basics',label:'What is OM?'},
+      {id:'om1-productivity',label:'Productivity'},
+      {id:'om1-learning',label:'Learning curves'},
+      {id:'om1-queue-intro',label:'Queuing intro'},
+      {id:'om1-distributions',label:'Distributions'},
+      {id:'om1-models',label:'M/M/1 · M/D/1 · M/M/S'},
+      {id:'om1-steps',label:'5-step method & examples'},
+      {id:'om1-refcard',label:'All formulas'}
+    ],
+    2:[],3:[],4:[],5:[],6:[],7:[]
+  }
+};
+
+let currentCat='qdm', currentWeek=1;
+
+function buildToc(cat,week){
+  const items=(TOCS[cat]||{})[week]||[];
+  document.getElementById('toc-label').textContent=cat.toUpperCase()+' W'+week;
+  const container=document.getElementById('toc-items');
+  container.innerHTML='';
+  items.forEach((it,i)=>{
+    const b=document.createElement('button');
+    b.className='toc-item'+(i===0?' on':'');
+    b.textContent=it.label;
+    b.onclick=()=>goTo(it.id);
+    container.appendChild(b);
+  });
+  setupObservers(cat,week);
+}
+
+function switchWeek(n,btn,cat){
+  cat=cat||currentCat; currentWeek=n; currentCat=cat;
+  document.querySelectorAll('.wk[data-cat="'+cat+'"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.week-page').forEach(p=>p.classList.remove('active'));
+  const pageId=cat==='qdm'?'week'+n:'om-week'+n;
+  const page=document.getElementById(pageId);
+  if(page)page.classList.add('active');
+  buildToc(cat,n);
+  closeSB();
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>{const pg=document.getElementById(pageId);if(pg&&window.renderMathInElement)renderMathInElement(pg,{delimiters:[{left:'\(',right:'\)',display:false},{left:'\[',right:'\]',display:true}],throwOnError:false});},100);
+  if(cat==='qdm'&&n===2)setTimeout(initUtilityCharts,200);
+}
+
+function setupObservers(cat,week){
+  const items=(TOCS[cat]||{})[week]||[];
+  items.forEach((it,i)=>{
+    const el=document.getElementById(it.id);
+    if(!el)return;
+    new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          document.querySelectorAll('#toc-items .toc-item').forEach(b=>b.classList.remove('on'));
+          const btns=document.querySelectorAll('#toc-items .toc-item');
+          if(btns[i])btns[i].classList.add('on');
+        }
+      });
+    },{rootMargin:'-15% 0px -75% 0px'}).observe(el);
+  });
+}
+
+/* ─── Sidebar data ─── */
+const D={
+/* ── WEEK 1 ── */
+profit:{tag:'Formula',title:'Profit per Cell',html:`
+<p>Three components form every cell in the decision table:</p>
+<div class="sf">\\(\\pi = \\underbrace{\\min(C,D)\\cdot p}_{\\text{revenue}} - \\underbrace{C\\cdot c}_{\\text{cost}} - \\underbrace{\\max(D-C,0)\\cdot g}_{\\text{goodwill loss}}\\)</div>
+<hr>
+<div class="ss"><div class="ssn">1</div><div class="sst"><strong>Revenue:</strong> You sell min(C,D) seats at price p.</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst"><strong>Cost:</strong> You pay for ALL capacity C regardless of sales.</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst"><strong>Goodwill loss:</strong> Every unserved customer costs penalty g.</div></div>
+<hr>
+<div class="se"><strong>Example:</strong> C=200, D=300, p=200, c=100, g=80<br>
+Revenue = 200·200 = 40 000 &nbsp;|&nbsp; Cost = 200·100 = 20 000 &nbsp;|&nbsp; OOS = 100 &nbsp;|&nbsp; Goodwill = 8 000<br>
+<strong>Profit = 12 000</strong></div>`},
+emv:{tag:'Formula',title:'Expected Monetary Value',html:`
+<div class="sf">\\(\\text{EMV}(d) = \\sum_{s} \\pi(d,s)\\cdot P(s)\\)</div>
+<p>Long-run average profit if the decision is repeated under the same probability distribution. Maximising EMV is the canonical rational criterion under risk.</p>
+<div class="sw"><strong>Limitation:</strong> EMV ignores variance. A risk-averse DM may prefer lower EMV with less variance — handled by utility theory.</div>`},
+hurwicz:{tag:'Criterion',title:'Hurwicz Criterion',html:`
+<div class="sf">\\(H(d) = \\alpha\\cdot\\max_s\\pi + (1-\\alpha)\\cdot\\min_s\\pi\\)</div>
+<div class="ss"><div class="ssn">1</div><div class="sst">\\(\\alpha=1\\) → MaxiMax (fully optimistic)</div></div>
+<div class="ss"><div class="ssn">0</div><div class="sst">\\(\\alpha=0\\) → MaxiMin (fully pessimistic)</div></div>
+<div class="se">α=0.8: H(200)=16, H(400)=28 → choose 400</div>
+<div class="sw"><strong>Exam:</strong> MaxiMax = Hurwicz α=1. Laplace is NOT a special case — it uses all values, not just best+worst.</div>`},
+evpi:{tag:'Formula',title:'EVPI',html:`
+<div class="sf">\\(\\text{EVPI} = \\text{EVwPI} - \\max_d\\text{EMV}(d)\\)</div>
+<p>Upper bound on what any information source is worth. Real info is imperfect so actual value ≤ EVPI.</p>
+<div class="se">Airline: EVwPI=18.0, max EMV=11.2 → <strong>EVPI = 6.8 k</strong><br>Consultant fee = 5k &lt; 6.8k → hire them.</div>`},
+'hard-decision':{tag:'Core Concept',title:'What makes decisions difficult?',html:`
+<div class="ss"><div class="ssn">1</div><div class="sst"><strong>Many options</strong> — large alternative space requires pruning.</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst"><strong>Contradicting objectives</strong> — profit vs. risk vs. customer satisfaction.</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst"><strong>Uncertainty</strong> — consequences depend on future events not yet known.</div></div>`},
+'good-decision':{tag:'Core Concept',title:'What makes a good decision?',html:`
+<div class="ss"><div class="ssn">1</div><div class="sst"><strong>Outcome</strong> — did it lead to a good result?</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst"><strong>Process</strong> — was it well-reasoned, transparent, based on available information?</div></div>
+<p style="margin-top:.4rem">A well-made decision can have a bad outcome due to luck. Process quality is what systematic methods improve.</p>`},
+'outcome-bias':{tag:'Cognitive Bias',title:'Outcome Bias',html:`
+<p>Judging decision quality by the eventual result, ignoring the quality of reasoning at the time.</p>
+<div class="se"><strong>Example:</strong> Investor buys stock with 10% success chance. It succeeds. Most say good decision — but the odds made it a bad one.</div>
+<p>The Monty Hall paradox: switching is correct (P=2/3). If you switch and lose, outcome bias calls it a bad decision. It wasn't.</p>`},
+'sales-formula':{tag:'Formula',title:'Sales = min(C, D)',html:`
+<div class="sf">\\(\\text{Sales} = \\min(C,D)\\)</div>
+<div class="se">C=200, D=150 → sell 150 (50 empty seats)<br>C=200, D=350 → sell 200 (150 unserved = OOS)</div>`},
+'oos-formula':{tag:'Formula',title:'Out-of-Stock = max(D−C, 0)',html:`
+<div class="sf">\\(\\text{OOS} = \\max(D - C,\\;0)\\)</div>
+<div class="se">C=200, D=350 → OOS = 150 → Goodwill cost = 150·80 = 12 000</div>`},
+type1:{tag:'Decision Type',title:'Type 1 — Under Certainty',html:`<p>All outcomes known before choosing. Pick the best option. Applies to LP optimisation (later weeks).</p>`},
+type2:{tag:'Decision Type',title:'Type 2 — Under Uncertainty',html:`<p>Scenarios known but <strong>no probability information</strong>. Use the five non-probabilistic criteria (MaxiMax, MaxiMin, Hurwicz, Laplace, MiniMax Regret).</p><div class="sw">Laplace assumes equal probs as a decision rule — the problem is still "under uncertainty".</div>`},
+type3:{tag:'Decision Type',title:'Type 3 — Under Risk',html:`<p>Known probability distribution over scenarios. Enables EMV, EOL, EVPI.</p><div class="sf">\\(\\text{EMV}(d) = \\sum_s \\pi(d,s)\\cdot P(s)\\)</div>`},
+maximax:{tag:'Criterion',title:'MaxiMax — Optimist\'s Rule',html:`
+<div class="sf">\\(d^* = \\arg\\max_d\\,\\max_s\\,\\pi(d,s)\\)</div>
+<div class="se">200-seat: max=20 &nbsp;|&nbsp; 400-seat: max=<strong>40</strong> → choose 400</div>
+<div class="sw">Ignores catastrophic outcomes entirely.</div>`},
+maximin:{tag:'Criterion',title:'MaxiMin — Pessimist\'s Rule',html:`
+<div class="sf">\\(d^* = \\arg\\max_d\\,\\min_s\\,\\pi(d,s)\\)</div>
+<div class="se">200-seat: worst=<strong>0</strong> &gt; 400-seat: worst=−20 → choose 200 seats</div>`},
+'hurwicz-detail':{tag:'Criterion',title:'Hurwicz — Realistic Balance',html:`
+<div class="sf">\\(H(d) = \\alpha\\cdot\\max_s\\pi + (1-\\alpha)\\cdot\\min_s\\pi\\)</div>
+<div class="se">α=0.8: H(200)=<strong>16</strong>, H(400)=<strong>28</strong> → choose 400</div>`},
+laplace:{tag:'Criterion',title:'Laplace — Equal Probability',html:`
+<div class="sf">\\(L(d) = \\frac{1}{n}\\sum_{s=1}^{n}\\pi(d,s)\\)</div>
+<div class="se">L(200)=9.0, L(400)=10.0 → choose 400</div>
+<div class="sw">NOT a special case of Hurwicz. Laplace uses all values; Hurwicz uses only best+worst.</div>`},
+minimax:{tag:'Criterion',title:'MiniMax Regret',html:`
+<div class="sf">\\(r(d,s) = \\max_{d'}\\pi(d',s) - \\pi(d,s)\\)</div>
+<div class="ss"><div class="ssn">1</div><div class="sst">Build regret table: col-max minus each cell.</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">Row maxima: worst regret per decision.</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">Select minimum max-regret.</div></div>
+<div class="se">200 seats: max=<strong>36</strong> &nbsp;|&nbsp; 400 seats: max=<strong>20</strong> → choose 400</div>`},
+'emv-worked':{tag:'Worked Example',title:'EMV — Full Calculation',html:`
+<p>P(100)=0.2, P(200)=0.3, P(300)=0.4, P(400)=0.1</p>
+<div class="sf">\\(\\text{EMV}(200) = 0{\\cdot}0.2 + 20{\\cdot}0.3 + 12{\\cdot}0.4 + 4{\\cdot}0.1 = \\mathbf{11.2}\\)</div>
+<div class="sf">\\(\\text{EMV}(400) = {-}20{\\cdot}0.2 + 0{\\cdot}0.3 + 20{\\cdot}0.4 + 40{\\cdot}0.1 = \\mathbf{8.0}\\)</div>
+<div class="sw">Most uncertainty criteria picked 400 seats. Under these probabilities, EMV reverses the recommendation. Probabilities matter enormously.</div>`},
+evwpi:{tag:'Formula',title:'EVwPI',html:`
+<div class="sf">\\(\\text{EVwPI} = \\sum_s \\max_d\\,\\pi(d,s)\\cdot P(s)\\)</div>
+<div class="se">0·0.2 + 20·0.3 + 20·0.4 + 40·0.1 = <strong>18.0 k</strong></div>`},
+'evpi-detail':{tag:'Formula',title:'EVPI — Full Detail',html:`
+<div class="sf">\\(\\text{EVPI} = \\text{EVwPI} - \\max_d\\text{EMV}(d)\\)</div>
+<div class="se">EVPI = 18.0 − 11.2 = <strong>6.8 k</strong></div>
+<p>Hire consultant if fee &lt; EVPI. Real info is imperfect so actual EVII &lt; EVPI.</p>`},
+'eol-insight':{tag:'Key Insight',title:'Why min EOL = EVPI (always)',html:`
+<div class="sf">\\(\\text{EOL}(d) = \\text{EVwPI} - \\text{EMV}(d)\\)</div>
+<div class="sf">\\(\\therefore\\;\\min_d\\text{EOL}(d) = \\text{EVwPI} - \\max_d\\text{EMV}(d) = \\text{EVPI}\\)</div>
+<div class="se">Compute EVPI via EVwPI table or read off min EOL — always the same.</div>`},
+regret:{tag:'Concept',title:'Regret / Opportunity Loss',html:`
+<div class="sf">\\(r(d,s) = \\max_{d'}\\pi(d',s) - \\pi(d,s)\\)</div>
+<p>Always ≥ 0. Equals 0 when you chose optimally for that scenario.</p>`},
+crossover1:{tag:'Sensitivity',title:'Crossover P = 0.167',html:`
+<div class="sf">\\(120\\,000P - 20\\,000 = 0 \\;\\Rightarrow\\; P = 0.167\\)</div>
+<div class="se">Below P=0.167: do nothing. Above: small factory.</div>`},
+crossover2:{tag:'Sensitivity',title:'Crossover P = 0.615',html:`
+<div class="sf">\\(260\\,000P = 160\\,000 \\;\\Rightarrow\\; P = 0.615\\)</div>
+<div class="se">Below P=0.615: small factory. Above: big factory.<br>Base case P=0.5 → small factory region.</div>`},
+
+/* ── WEEK 2 ── */
+'w2-emv':{tag:'W2 Formula',title:'EMV & Tree Fold-back',html:`
+<div class="sf">\\(\\text{EMV}(d) = \\sum_s \\pi(d,s)\\cdot P(s)\\)</div>
+<div class="ss"><div class="ssn">1</div><div class="sst">Start at leaf nodes (raw payoffs, right side).</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">At each circle: compute weighted average → EMV.</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">At each square: pick max EMV, strike out other branches.</div></div>
+<div class="ss"><div class="ssn">4</div><div class="sst">Propagate leftward to the root decision.</div></div>
+<div class="se">Market entry: EMV(Neutral) = 20×0.45+7×0.55 = <strong>12.85</strong> → optimal without research</div>`},
+
+'w2-nodes':{tag:'Decision Tree',title:'Tree Nodes — Squares & Circles',html:`
+<div class="ss"><div class="ssn">■</div><div class="sst"><strong>Square = decision node.</strong> You choose. Write the maximum EMV above the node. Prune (strike) all branches except the chosen one.</div></div>
+<div class="ss"><div class="ssn">●</div><div class="sst"><strong>Circle = event (chance) node.</strong> Nature decides. Each branch has a probability label. Compute EMV = Σ(payoff × prob). Write it above the node.</div></div>
+<hr>
+<p>Probabilities at every circle must sum to 1. If using posterior probabilities (after Bayes), these replace the prior probabilities at the relevant circles.</p>`},
+
+'w2-evpi':{tag:'W2 Formula',title:'EVPI — Value of Perfect Information',html:`
+<p><strong>Idea:</strong> Swap the order — event comes first, then decision. You now always pick optimally.</p>
+<div class="sf">\\(\\text{EVwPI} = \\sum_s \\max_d\\,\\pi(d,s)\\cdot P(s)\\)</div>
+<div class="sf">\\(\\text{EVPI} = \\text{EVwPI} - \\max_d\\text{EMV}(d)\\)</div>
+<div class="se">Market entry: EVwPI = 30×0.45 + 15×0.55 = 13.50+8.25 = 21.75<br>EVPI = 21.75 − 12.85 = <strong>8.90</strong><br>Max you'd pay for a perfect oracle.</div>
+<div class="sw">EVPI is an upper bound. No real research achieves perfect info — EVSI ≤ EVPI always.</div>`},
+
+'w2-bayes':{tag:'W2 Formula',title:'Bayes\' Theorem — Flip the Conditioning',html:`
+<p>You know P(signal|state) from reliability data. You need P(state|signal) to update your decision.</p>
+<div class="sf">\\(P(S{\\mid}P) = \\dfrac{P(P{\\mid}S)\\cdot P(S)}{P(P{\\mid}S)\\cdot P(S)+P(P{\\mid}W)\\cdot P(W)}\\)</div>
+<hr>
+<div class="ss"><div class="ssn">1</div><div class="sst">Fill in the joint probability table: P(signal∩state) = P(signal|state)×P(state).</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">Row sums = P(signal). Column sums = prior P(state).</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">Posterior = cell ÷ row sum.</div></div>
+<div class="se">P(S|P) = 0.270/0.435 = <strong>0.621</strong> &nbsp;|&nbsp; P(S|N) = 0.180/0.565 = <strong>0.319</strong></div>`},
+
+'w2-joint':{tag:'W2 Formula',title:'Joint & Conditional Probability',html:`
+<div class="sf">\\(P(A\\cap B) = P(A{\\mid}B)\\cdot P(B) = P(B{\\mid}A)\\cdot P(A)\\)</div>
+<div class="sf">\\(P(A{\\mid}B) = \\dfrac{P(A\\cap B)}{P(B)}\\)</div>
+<div class="se">P(S∩P) = P(P|S)×P(S) = 0.60×0.45 = <strong>0.270</strong></div>
+<p>The joint probability table is the cleanest way to organise these calculations — build it every time.</p>`},
+
+'w2-baseratefallacy':{tag:'W2 Concept',title:'Base-Rate Fallacy — Bomb Scanner Example',html:`
+<p>Scanner: P(alarm|bomb) = 0.99, P(alarm|no bomb) = 0.02, P(bomb) = 0.0001</p>
+<div class="sf">\\(P(\\text{bomb}\\mid\\text{alarm}) = \\dfrac{0.99\\times0.0001}{0.99\\times0.0001+0.02\\times0.9999}\\)</div>
+<div class="sf">\\(= \\dfrac{0.000099}{0.020097} \\approx \\mathbf{0.0049}\\)</div>
+<p>Despite 99% accuracy, only ~0.5% of alarms are real bombs. The tiny base rate (0.01%) dominates. This is the base-rate fallacy — ignoring priors.</p>
+<div class="sw">The same logic applies to any rare-event detection: medical tests, fraud, security screening. Never ignore the prior.</div>`},
+
+'w2-evsi':{tag:'W2 Formula',title:'EVSI — Value of Sample Information',html:`
+<div class="sf">\\(\\text{EVwSI} = \\sum_k P(k)\\cdot\\max_d\\text{EMV}(d\\mid k)\\)</div>
+<div class="sf">\\(\\text{EVSI} = \\text{EVwSI} - \\max_d\\text{EMV}(d)\\)</div>
+<div class="ss"><div class="ssn">1</div><div class="sst">Compute posterior probs via Bayes for each signal k.</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">Find best EMV for each signal using posteriors.</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">Weight by P(signal), sum → EVwSI.</div></div>
+<div class="se">Positive (0.435): best EMV = 15.59 (Aggressive)<br>Negative (0.565): best EMV = 11.81 (Careful)<br>EVwSI = 0.435×15.59 + 0.565×11.81 = <strong>13.45</strong><br>EVSI = 13.45 − 12.85 = <strong>0.60</strong></div>`},
+
+'w2-efficiency':{tag:'W2 Formula',title:'Efficiency of Sample Information',html:`
+<div class="sf">\\(\\text{Efficiency} = \\dfrac{\\text{EVSI}}{\\text{EVPI}}\\times100\\%\\)</div>
+<div class="se">0.60 / 8.90 × 100% = <strong>6.7%</strong></div>
+<p>A low efficiency (6.7%) means the market research is only marginally better than no information. The research reliability (60%/70%) is not high enough relative to the EVPI ceiling.</p>
+<div class="sw">0 ≤ EVSI ≤ EVPI always. Efficiency = 100% only with perfect information.</div>`},
+
+'w2-quizanswer':{tag:'W2 Quiz',title:'Quiz — EVSI vs EVPI',html:`
+<p>Statements: (i) EVSI &gt; 0 &nbsp;·&nbsp; (ii) EVSI ≤ EVPI</p>
+<div class="sw"><strong>(i) is FALSE.</strong> EVSI can equal 0 — if the research signal doesn't change any decision, there is zero value in the information.</div>
+<div class="se"><strong>(ii) is TRUE.</strong> Imperfect information can never be worth more than perfect information. Algebraically: EVwSI ≤ EVwPI always, so EVSI ≤ EVPI.</div>
+<p>Answer: <strong>d) Only (ii) is true.</strong></p>`},
+
+'w2-eu':{tag:'W2 Formula',title:'Expected Utility',html:`
+<div class="sf">\\(\\text{EU}(d) = \\sum_s U(\\pi(d,s))\\cdot P(s)\\)</div>
+<p>Replace monetary payoffs with utility values, then compute exactly like EMV. Choose max EU.</p>
+<div class="se">Risk-avoider with U(100)=0.1, U(200)=0.9:<br>EU = 0.5×0.1 + 0.5×0.9 = <strong>0.50</strong></div>`},
+
+'w2-riskpremium':{tag:'W2 Formula',title:'Risk Premium',html:`
+<div class="sf">\\(\\text{Risk premium} = \\text{EMV} - X\\quad\\text{where }U(X) = \\text{EU}\\)</div>
+<p>X is the <em>risk-free equivalent</em> — the certain amount that gives the same utility as the risky gamble.</p>
+<div class="se">EU = 0.50 → U(X) = 0.50 → X = 125 (from utility table)<br>EMV = 150 &nbsp;|&nbsp; Risk premium = 150 − 125 = <strong>&euro;25</strong><br>The risk-avoider gives up &euro;25 to eliminate uncertainty.</div>
+<div class="sw">Risk premium &gt; 0 → risk-avoider. = 0 → risk-neutral. &lt; 0 → risk-seeker.</div>`},
+
+'w2-riskavoider':{tag:'W2 Utility',title:'Risk-Avoiding Decision Maker',html:`
+<p>Concave utility function: each additional euro gives less utility than the previous.</p>
+<div class="sf">\\(U(\\text{EMV}) > \\text{EU}\\quad\\Leftrightarrow\\quad\\text{risk-avoiding}\\)</div>
+<div class="ss"><div class="ssn">→</div><div class="sst">Needs more than 50% chance of winning to play a symmetric ±&euro;1 game.</div></div>
+<div class="ss"><div class="ssn">→</div><div class="sst">Prefers a certain &euro;125 over a 50/50 gamble of &euro;100 or &euro;200 (EMV=&euro;150).</div></div>
+<div class="se">U(100)=0.1, U(125)=0.5, U(150)=0.75, U(175)=0.85, U(200)=0.9<br>EU(gamble) = 0.5×0.1+0.5×0.9 = 0.50<br>U(150) = 0.75 &gt; 0.50 → risk-avoiding confirmed</div>
+<p>Real-world example: <strong>buying insurance</strong> — you pay a premium above expected loss to eliminate risk.</p>`},
+
+'w2-riskneutral':{tag:'W2 Utility',title:'Risk-Neutral Decision Maker',html:`
+<p>Linear utility: U(x) = constant × x. Utility is perfectly proportional to money.</p>
+<div class="sf">\\(U(\\text{EMV}) = \\text{EU}\\quad\\Leftrightarrow\\quad\\text{risk-neutral}\\)</div>
+<div class="se">Indifferent between &euro;1 for certain and a 50/50 gamble of &euro;0 or &euro;2 (both have EMV=&euro;1).</div>
+<p>Maximising EMV is exactly right for a risk-neutral DM. Risk premium = 0.</p>`},
+
+'w2-riskseeker':{tag:'W2 Utility',title:'Risk-Seeking Decision Maker',html:`
+<p>Convex utility function: each additional euro gives <em>more</em> utility than the previous.</p>
+<div class="sf">\\(U(\\text{EMV}) < \\text{EU}\\quad\\Leftrightarrow\\quad\\text{risk-seeking}\\)</div>
+<div class="ss"><div class="ssn">→</div><div class="sst">Accepts less than 50% chance of winning to play a symmetric ±&euro;1 game.</div></div>
+<div class="ss"><div class="ssn">→</div><div class="sst">Prefers the gamble over its expected value — the variance itself has positive utility.</div></div>
+<p>Real-world example: <strong>buying lottery tickets</strong> — EMV is negative, yet people play.</p>`}
+};
+
+function openSB(key){
+  const d=D[key];if(!d)return;
+  const c=document.getElementById('sb-content');
+  c.innerHTML=`<div class="sb-tag">${d.tag}</div><div class="sb-title">${d.title}</div><div class="sb-body">${d.html}</div>`;
+  document.getElementById('sb').classList.add('open');
+  document.getElementById('ov').classList.add('on');
+  if(window.renderMathInElement){
+    renderMathInElement(c,{
+      delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],
+      throwOnError:false
+    });
+  }
+}
+
+function closeSB(){
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('ov').classList.remove('on');
+}
+
+function renderMath(){
+  renderMathInElement(document.body,{
+    delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],
+    throwOnError:false
+  });
+}
+
+function goTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+
+/* ─── Sensitivity chart (Week 1) ─── */
+
+function switchCat(cat,btn){
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat=cat;
+  document.getElementById('nav-logo').textContent=cat==='qdm'?'QDM · RSM':'OM · RSM';
+  document.querySelectorAll('.wk').forEach(b=>{
+    b.style.display=b.dataset.cat===cat?'':'none';
+    b.classList.remove('active');
+  });
+  document.querySelectorAll('.week-page').forEach(p=>p.classList.remove('active'));
+  const first=document.querySelector('.wk[data-cat="'+cat+'"]:not(.locked)');
+  if(first)first.classList.add('active');
+  const pageId=cat==='qdm'?'week1':'om-week1';
+  const page=document.getElementById(pageId);
+  if(page)page.classList.add('active');
+  buildToc(cat,1);
+  closeSB();
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>{const pg=document.getElementById(pageId);if(pg&&window.renderMathInElement)renderMathInElement(pg,{delimiters:[{left:'\(',right:'\)',display:false},{left:'\[',right:'\]',display:true}],throwOnError:false});},100);
+}
+window.addEventListener('load',()=>{
+  buildToc('qdm',1);
+  const pts=Array.from({length:21},(_,i)=>i/20);
+  const scEl=document.getElementById('sc');
+  if(scEl){
+    new Chart(scEl,{
+      type:'line',
+      data:{
+        labels:pts.map(p=>p.toFixed(2)),
+        datasets:[
+          {label:'Big',data:pts.map(p=>Math.round((380000*p-180000)/1000)),borderColor:'#c8cdd4',borderWidth:1.5,pointRadius:0,tension:.1},
+          {label:'Small',data:pts.map(p=>Math.round((120000*p-20000)/1000)),borderColor:'#7aad8a',borderWidth:1.5,pointRadius:0,tension:.1},
+          {label:'Nothing',data:pts.map(()=>0),borderColor:'#3e4349',borderWidth:1,borderDash:[4,4],pointRadius:0}
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{backgroundColor:'#161719',borderColor:'rgba(255,255,255,0.08)',borderWidth:1,titleColor:'#dde0e4',bodyColor:'#8a9099',titleFont:{family:'DM Mono',size:10},bodyFont:{size:10},callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y}k`}}},
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#555b64',font:{size:9,family:'DM Mono'},maxTicksLimit:6},title:{display:true,text:'P (probability positive market)',color:'#555b64',font:{size:9}}},
+          y:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#555b64',font:{size:9,family:'DM Mono'},callback:v=>v+'k'},title:{display:true,text:'EMV (k)',color:'#555b64',font:{size:9}}}
+        }
+      }
+    });
+  }
+});
+
+/* ─── Utility mini-charts (Week 2) ─── */
+let utilityChartsInited=false;
+function initUtilityCharts(){
+  if(utilityChartsInited)return;
+  utilityChartsInited=true;
+  const xs=Array.from({length:11},(_,i)=>i/10);
+  const configs=[
+    {id:'uc1',fn:x=>Math.pow(x,.45),color:'#b06060'},
+    {id:'uc2',fn:x=>x,color:'#555b64'},
+    {id:'uc3',fn:x=>Math.pow(x,2.2),color:'#b89a5a'}
+  ];
+  configs.forEach(({id,fn,color})=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    new Chart(el,{
+      type:'line',
+      data:{
+        labels:xs.map(x=>x.toFixed(1)),
+        datasets:[{
+          data:xs.map(fn).map(v=>+v.toFixed(3)),
+          borderColor:color,borderWidth:1.5,pointRadius:0,tension:.3,fill:false
+        }]
+      },
+      options:{
+        responsive:false,
+        plugins:{legend:{display:false},tooltip:{enabled:false}},
+        scales:{
+          x:{display:false},
+          y:{display:false,min:0,max:1}
+        },
+        animation:{duration:0}
+      }
+    });
+  });
+}
+
+/* ══ OM SIDEBAR DATA ══ */
+D['om-sf-prod']={tag:'OM Formula',title:'Single-Factor Productivity',html:`
+<div class="sf">\(P = \dfrac{\text{Units produced}}{\text{Input used}}\)</div>
+<p>One input only. Can be labour-hours, machine-hours, kg of material, etc.</p>
+<div class="se"><strong>Example:</strong> 1 000 burgers &divide; 500 hrs = <strong>2 burgers/labour-hour</strong></div>`};
+D['om-mf-prod']={tag:'OM Formula',title:'Multi-Factor Productivity',html:`
+<div class="sf">\(P = \dfrac{\text{Output}}{L + M + E + C + \text{misc}}\)</div>
+<p>All inputs converted to the same monetary unit (&euro;). More complete than single-factor.</p>
+<div class="se">1 100 burgers/day &divide; (500&times;&euro;20 + &euro;1 000) = 1100/11000 = <strong>0.10 burgers/&euro;</strong></div>
+<div class="sw"><strong>Trap:</strong> Rate &ne; time. Service time = 20 sec &rarr; &mu; = 3600/20 = 180/hr.</div>`};
+D['om-lc-arith']={tag:'OM Formula',title:'Learning Curve &mdash; Arithmetic',html:`
+<div class="sf">\(T_{2N} = L \cdot T_N\)</div>
+<p>Each time production <strong>doubles</strong>, unit time &times; learning rate L. Only usable at doubling points.</p>
+<div class="se">L=0.60, T<sub>1</sub>=25 min:<br>T<sub>2</sub>=15 &middot; T<sub>4</sub>=9 &middot; T<sub>8</sub>=5.4 min</div>
+<div class="sw">80% curve drops faster (better learning) than 90%. L near 1.0 = very slow improvement.</div>`};
+D['om-lc-log']={tag:'OM Formula',title:'Learning Curve &mdash; Logarithmic',html:`
+<div class="sf">\(T_N = T_1 \cdot N^{\,\log L / \log 2}\)</div>
+<p>Works for any N. Formula is in the exam appendix.</p>
+<div class="ss"><div class="ssn">1</div><div class="sst">Set up equation with known values.</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">Take log of both sides.</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">Isolate log L, then exponentiate.</div></div>`};
+D['om-lc-exam']={tag:'OM Worked Example',title:'Shipyard: Find Minimum L',html:`
+<div class="sf">\(65 = 100\cdot 17^{\,\log L/\log 2}\)</div>
+<div class="ss"><div class="ssn">1</div><div class="sst">Divide: 65/100 = 17<sup>(log L/log 2)</sup></div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">log(0.65) = (log L/log 2) &times; log 17</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">log L = log(0.65) &times; log 2 / log 17 = &minus;0.0458</div></div>
+<div class="ss"><div class="ssn">4</div><div class="sst">L = 10<sup>&minus;0.0458</sup> &asymp; <strong>0.90</strong></div></div>
+<div class="se">The shipyard must achieve at least 90% learning rate to meet the 65-day target.</div>`};
+D['om-mm1']={tag:'OM Formula',title:'M/M/1 Queuing Model',html:`
+<div class="sf">\(W_s = \dfrac{1}{\mu-\lambda} \qquad L_s = \dfrac{\lambda}{\mu-\lambda}\)</div>
+<div class="sf">\(W_q = \dfrac{\lambda}{\mu(\mu-\lambda)} \qquad L_q = \dfrac{\lambda^2}{\mu(\mu-\lambda)}\)</div>
+<div class="sw"><strong>Condition:</strong> &mu; &gt; &lambda; must hold &mdash; otherwise queue grows without bound.</div>
+<div class="se">Coffee corner: &lambda;=60, &mu;=180 &rarr; W<sub>s</sub>=1/120 hr=30 sec total. W<sub>q</sub>=10 sec waiting.</div>`};
+D['om-md1']={tag:'OM Formula',title:'M/D/1 &mdash; Constant Service',html:`
+<div class="sf">\(L_q = \dfrac{\lambda^2}{2\mu(\mu-\lambda)} \qquad W_q = \dfrac{\lambda}{2\mu(\mu-\lambda)}\)</div>
+<div class="sf">\(L_s = \dfrac{\lambda(2\mu-\lambda)}{2\mu(\mu-\lambda)} \qquad W_s = \dfrac{2\mu-\lambda}{2\mu(\mu-\lambda)}\)</div>
+<p>Exactly half the queue of M/M/1 at the same load. Eliminating service variability is very impactful.</p>
+<div class="se">Vending: &lambda;=144, &mu;=240 &rarr; L<sub>q</sub>=144&sup2;/(2&times;240&times;96)=0.45 people.</div>`};
+D['om-util']={tag:'OM Formula',title:'Utilization, P₀, P(n&gt;k)',html:`
+<div class="sf">\(\rho = \lambda/\mu \quad(\text{M/M/S: }\rho=\lambda/S\mu)\)</div>
+<div class="sf">\(P_0 = 1-\rho \qquad P_{n>k} = \rho^{k+1}\)</div>
+<div class="se">&rho;=60/180=0.333 &rarr; P<sub>0</sub>=0.667 (idle 67% of time).<br>P(n&gt;2)=(1/3)<sup>3</sup>=0.037 (3.7% chance of 3+ in system).</div>
+<div class="sw">&rho; must be &lt; 1. As &rho; &rarr; 1, queue length &rarr; &infin;. Extremely sensitive near saturation.</div>`};
+D['om-little']={tag:'OM Formula',title:"Little's Law",html:`
+<div class="sf">\(L_s = \lambda \cdot W_s \qquad L_q = \lambda \cdot W_q\)</div>
+<p>Completely general &mdash; holds for any stable queue regardless of distribution. Named after John Little (1961).</p>
+<div class="se">&lambda;=60/hr, W<sub>s</sub>=30s=1/120 hr &rarr; L<sub>s</sub>=60&times;(1/120)=<strong>0.5 people in system</strong></div>
+<p>Use to convert between length (L) and time (W) measures.</p>`};
+D['om-wqws']={tag:'OM Formula',title:'Queue &harr; System Conversion',html:`
+<div class="sf">\(W_q = W_s - 1/\mu \qquad L_q = L_s - \lambda/\mu\)</div>
+<p>System time = queue wait + service time. So queue wait = system time &minus; average service time (1/&mu;).</p>
+<div class="se">W<sub>s</sub>=30 sec, &mu;=180/hr &rarr; 1/&mu;=20 sec &rarr; W<sub>q</sub>=30&minus;20=<strong>10 sec</strong></div>`};
+D['om-3fn']={tag:'OM Concept',title:'Three Essential Business Functions',html:`
+<div class="ss"><div class="ssn">1</div><div class="sst"><strong>Marketing:</strong> generates demand &mdash; advertising, pricing, distribution.</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst"><strong>Production/Operations:</strong> creates the product or service.</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst"><strong>Finance/Accounting:</strong> tracks performance, pays bills, collects money.</div></div>
+<div class="sw">All three must coordinate. Good operations can be ruined by poor marketing or financing.</div>`};
+D['om-spectrum']={tag:'OM Concept',title:'Goods vs Services Spectrum',html:`
+<p>Most products combine both. Key distinguishing feature: services are intangible, produced and consumed simultaneously, cannot be inventoried.</p>
+<div class="se">Automobile &asymp;75% good &middot; Fast-food &asymp;50/50 &middot; Hospital care &asymp;30/70 &middot; Counselling &asymp;100% service</div>`};
+D['om-areas']={tag:'OM Course Areas',title:'Three Course Areas',html:`
+<div class="ss"><div class="ssn">1</div><div class="sst"><strong>Performance req. &amp; analysis:</strong> Module E (Learning curves) &middot; Module D (Waiting lines) &middot; Reader (Deterministic estimation)</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst"><strong>Process design:</strong> Ch 2, 5, 6, 7, 9, 10 &mdash; Strategy, Quality, Capacity, Layout, HR</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst"><strong>Planning &amp; scheduling:</strong> Ch 12&ndash;16 &mdash; Inventory, Aggregate planning, MRP/ERP, Scheduling, JIT/Lean</div></div>`};
+D['om-qterms']={tag:'OM Concept',title:'Queuing Terminology',html:`
+<div class="ss"><div class="ssn">Queue</div><div class="sst">The waiting line of arrivals.</div></div>
+<div class="ss"><div class="ssn">Arrival</div><div class="sst">One unit (person, ship, part) demanding service.</div></div>
+<div class="ss"><div class="ssn">Discipline</div><div class="sst">Order of service. FIFO is the standard assumption.</div></div>
+<div class="ss"><div class="ssn">Channel</div><div class="sst">Number of parallel servers (= S in M/M/S).</div></div>
+<div class="ss"><div class="ssn">Phase</div><div class="sst">Number of sequential service steps. Most models: single phase.</div></div>`};
+D['om-qexamples']={tag:'OM Concept',title:'Waiting Line Examples',html:`
+<div class="ss"><div class="ssn">Bank</div><div class="sst">Arrivals: customers &middot; Server: teller &middot; Service: deposit/withdrawal</div></div>
+<div class="ss"><div class="ssn">Harbour</div><div class="sst">Arrivals: ships &middot; Server: cranes/jetty &middot; Service: (un)loading</div></div>
+<div class="ss"><div class="ssn">Assembly</div><div class="sst">Arrivals: parts &middot; Server: workers &middot; Service: assembly step</div></div>
+<div class="ss"><div class="ssn">Airline</div><div class="sst">Arrivals: customers &middot; Server: desk workers &middot; Service: check-in</div></div>`};
+D['om-qcost']={tag:'OM Concept',title:'Waiting Line Cost Trade-off',html:`
+<p>Total cost = service cost + waiting cost. As service level &uarr;, service cost &uarr; but waiting cost &darr;. Optimum is at the minimum of total cost &mdash; neither extreme.</p>
+<div class="sw">Waiting cost is often hard to quantify (lost goodwill, patient health). Use sensitivity analysis around your estimate.</div>`};
+D['om-poisson']={tag:'OM Distribution',title:'Poisson Distribution',html:`
+<div class="sf">\(P(x) = \dfrac{e^{-\lambda}\lambda^x}{x!}\)</div>
+<p>Counts arrivals in a fixed interval. Integer-valued. Mean = &lambda;.</p>
+<div class="se">If &lambda;=5/hr: P(3 arrive) = e<sup>&minus;5</sup>&times;5<sup>3</sup>/3! = 0.1404</div>`};
+D['om-negexp']={tag:'OM Distribution',title:'Negative Exponential Distribution',html:`
+<div class="sf">\(f(t > x) = e^{-\mu x}\)</div>
+<p>Models random service times. Mean rate = &mu;; mean time = 1/&mu;. Memoryless: past time gives no info about remaining time.</p>
+<div class="se">If &mu;=3/hr (service time=20 min): P(service&gt;30 min)=e<sup>&minus;1.5</sup>=0.223</div>`};
+D['om-notation']={tag:'OM Concept',title:'M/M/1 Notation Decoded',html:`
+<div class="ss"><div class="ssn">M</div><div class="sst"><strong>First letter &mdash; arrivals:</strong> Markovian = Poisson distributed.</div></div>
+<div class="ss"><div class="ssn">M/D</div><div class="sst"><strong>Second letter &mdash; service:</strong> M = neg. exponential (random). D = deterministic (exact, constant).</div></div>
+<div class="ss"><div class="ssn">1/S</div><div class="sst"><strong>Third letter &mdash; servers:</strong> 1 = single channel. S = multiple parallel channels.</div></div>
+<div class="sw">Standard assumptions: infinite population, FIFO discipline, no balking, unlimited queue capacity, &mu; &gt; &lambda;.</div>`};
+D['om-mms']={tag:'OM Concept',title:'M/M/S &mdash; Multi-Channel Method',html:`
+<div class="ss"><div class="ssn">1</div><div class="sst">Compute &lambda;/&mu; and &rho; = &lambda;/(S&mu;). Must have &rho; &lt; 1.</div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">Look up P<sub>0</sub> in the appendix table using &lambda;/&mu; and S.</div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">Get L<sub>q</sub> from table, then: W<sub>q</sub>=L<sub>q</sub>/&lambda; &middot; W<sub>s</sub>=W<sub>q</sub>+1/&mu; &middot; L<sub>s</sub>=&lambda;&middot;W<sub>s</sub>.</div></div>
+<div class="se"><strong>Bank example:</strong> &lambda;=30/hr, &mu;=15/hr. Target W<sub>s</sub>&lt;5 min=1/12 hr. Try S=3: &rho;=30/45=0.667. Table &rarr; P<sub>0</sub> &rarr; L<sub>q</sub> &rarr; W<sub>s</sub>.</div>
+<div class="ok ib">Pooling insight: one M/M/S queue always outperforms multiple M/M/1 queues at the same total capacity.</div>`};
+D['om-coffee']={tag:'OM Worked Example',title:'Coffee Corner &mdash; M/M/1',html:`
+<div class="ss"><div class="ssn">1</div><div class="sst">Model: Poisson arrivals + neg. exp. service + 1 server &rarr; <strong>M/M/1</strong></div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">&lambda;=60/hr. Service=20 sec &rarr; &mu;=3600/20=<strong>180/hr</strong></div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">Measure: W<sub>s</sub> = average time in system (wait + service)</div></div>
+<div class="ss"><div class="ssn">4</div><div class="sst">Formula: W<sub>s</sub> = 1/(&mu;&minus;&lambda;)</div></div>
+<div class="ss"><div class="ssn">5</div><div class="sst">W<sub>s</sub> = 1/(180&minus;60) = 1/120 hr = <strong>30 seconds total</strong></div></div>
+<hr>
+<div class="se">W<sub>q</sub>=30&minus;20=10 sec waiting. L<sub>q</sub>=60&times;(10/3600)=0.17 people in queue on average.</div>`};
+D['om-vending']={tag:'OM Worked Example',title:'Vending Machine &mdash; M/D/1',html:`
+<div class="ss"><div class="ssn">1</div><div class="sst">Model: Poisson arrivals + constant service + 1 server &rarr; <strong>M/D/1</strong></div></div>
+<div class="ss"><div class="ssn">2</div><div class="sst">Arrive every 25s &rarr; &lambda;=3600/25=<strong>144/hr</strong>. Machine=exactly 15s &rarr; &mu;=3600/15=<strong>240/hr</strong></div></div>
+<div class="ss"><div class="ssn">3</div><div class="sst">Measure: L<sub>q</sub> = average number waiting in queue</div></div>
+<div class="ss"><div class="ssn">4</div><div class="sst">Formula M/D/1: L<sub>q</sub> = &lambda;&sup2; / [2&mu;(&mu;&minus;&lambda;)]</div></div>
+<div class="ss"><div class="ssn">5</div><div class="sst">L<sub>q</sub> = 144&sup2;/(2&times;240&times;96) = 20736/46080 = <strong>0.45 &rarr; Answer B</strong></div></div>`};
+
+</script>
+</body>
+</html>
